@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dawn — Alarm Clock &amp; Sleep Timer for iOS</title>
+<meta name="description" content="A beautifully simple alarm clock and sleep timer for iOS. Gentle sunrise wake-ups, 11 handcrafted ambient sounds, six gorgeous themes. 15 days free, then pay once." />
+<meta name="theme-color" content="#0B0B0F" />
+
+<!-- Open Graph / Twitter -->
+<meta property="og:title" content="Dawn — Alarm Clock &amp; Sleep Timer" />
+<meta property="og:description" content="Wake up kinder. Fall asleep easier. A beautifully simple alarm clock for iOS." />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Dawn — Alarm Clock &amp; Sleep Timer" />
+<meta name="twitter:description" content="Wake up kinder. Fall asleep easier." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+<!-- Inline favicon: a gradient sunrise disc -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FF8A5B'/%3E%3Cstop offset='1' stop-color='%23FFC266'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%230B0B0F'/%3E%3Ccircle cx='32' cy='34' r='16' fill='url(%23g)'/%3E%3C/svg%3E" />
+
+<style>
+/* ---------- Tokens ---------- */
+:root {
+  --bg: #0B0B0F;
+  --text: #F5F3EE;
+  --text-muted: rgba(245, 243, 238, 0.58);
+  --text-dim: rgba(245, 243, 238, 0.38);
+  --surface-1: rgba(255, 255, 255, 0.045);
+  --surface-2: rgba(255, 255, 255, 0.08);
+  --stroke: rgba(255, 255, 255, 0.08);
+  --hairline: rgba(255, 255, 255, 0.06);
+  --card: rgba(22, 22, 28, 0.55);
+  --card-solid: rgba(22, 22, 28, 0.85);
+
+  /* Themes — mirrors the in-app DawnTheme palette */
+  --aurora-from: #FF8A5B; --aurora-to: #FFC266;
+  --indigo-from: #7C5CFF; --indigo-to: #B06CFF;
+  --ocean-from:  #2BB6FF; --ocean-to:  #42E8D5;
+  --mint-from:   #2EE6A8; --mint-to:   #9BF0A0;
+  --rose-from:   #FF5D8F; --rose-to:   #FFA6AE;
+  --sand-from:   #E6C78A; --sand-to:   #FFE6B8;
+
+  /* Active theme — changed by JS when a swatch is clicked */
+  --theme-from: var(--aurora-from);
+  --theme-to:   var(--aurora-to);
+  --theme-ring: var(--aurora-from);
+
+  --gradient: linear-gradient(135deg, var(--theme-from), var(--theme-to));
+  --gradient-soft: linear-gradient(135deg, rgba(255, 138, 91, 0.18), rgba(255, 194, 102, 0.12));
+
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-feature-settings: 'ss01', 'ss02', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+body { min-height: 100vh; position: relative; }
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; border: none; background: transparent; color: inherit; cursor: pointer; }
+
+::selection { background: var(--theme-from); color: var(--bg); }
+
+/* ---------- Layout helpers ---------- */
+.container {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 40px);
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.section-title {
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-top: 12px;
+}
+
+.section-lead {
+  font-size: clamp(16px, 1.8vw, 19px);
+  color: var(--text-muted);
+  max-width: 640px;
+  margin-top: 16px;
+}
+
+/* ---------- Aurora backdrop ---------- */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  transition: background 0.8s ease;
+}
+
+.aurora-blob.a { width: 640px; height: 640px; background: var(--theme-from); opacity: 0.22; top: -220px; left: -240px; animation: drift1 22s ease-in-out infinite; }
+.aurora-blob.b { width: 520px; height: 520px; background: var(--theme-to);   opacity: 0.16; top: 8%;     right: -180px; animation: drift2 28s ease-in-out infinite; }
+.aurora-blob.c { width: 560px; height: 440px; background: var(--theme-from); opacity: 0.10; bottom: -20%; left: 20%;    animation: drift3 34s ease-in-out infinite; }
+
+@keyframes drift1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(60px, 40px); } }
+@keyframes drift2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-40px, 50px); } }
+@keyframes drift3 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(30px, -40px); } }
+
+/* Grain overlay — the same subtle noise the app uses */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.8'/></svg>");
+}
+
+/* ---------- Nav ---------- */
+nav {
+  position: sticky;
+  top: 16px;
+  z-index: 60;
+  padding: 0 16px;
+}
+
+.nav-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 16px;
+  background: rgba(22, 22, 28, 0.62);
+  backdrop-filter: saturate(1.3) blur(18px);
+  -webkit-backdrop-filter: saturate(1.3) blur(18px);
+  border: 0.5px solid var(--stroke);
+  border-radius: 999px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.brand-mark {
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  background: var(--gradient);
+  display: grid; place-items: center;
+  box-shadow: 0 6px 18px rgba(255, 138, 91, 0.35);
+}
+.brand-mark svg { width: 14px; height: 14px; color: var(--bg); }
+
+.nav-links {
+  display: flex;
+  gap: 6px;
+}
+
+.nav-links a {
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.nav-links a:hover { color: var(--text); background: var(--surface-1); }
+
+.nav-cta {
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: var(--gradient);
+  color: var(--bg);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  box-shadow: 0 8px 24px rgba(255, 138, 91, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(255, 138, 91, 0.48); }
+
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  will-change: transform;
+}
+
+.btn-primary {
+  background: var(--gradient);
+  color: var(--bg);
+  box-shadow: 0 14px 36px rgba(255, 138, 91, 0.4);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 44px rgba(255, 138, 91, 0.55); }
+
+.btn-ghost {
+  background: var(--surface-1);
+  border: 0.5px solid var(--stroke);
+  color: var(--text);
+}
+.btn-ghost:hover { background: var(--surface-2); }
+
+.app-store-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 20px 11px 18px;
+  border-radius: 14px;
+  background: var(--text);
+  color: var(--bg);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 14px 36px rgba(245, 243, 238, 0.15);
+}
+.app-store-badge:hover { transform: translateY(-2px); box-shadow: 0 20px 44px rgba(245, 243, 238, 0.22); }
+.app-store-badge .small { font-size: 10px; letter-spacing: 0.02em; opacity: 0.7; font-weight: 500; display: block; }
+.app-store-badge .big { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; margin-top: -2px; }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  padding: clamp(56px, 10vw, 110px) 0 clamp(60px, 12vw, 140px);
+  overflow: hidden;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 60px;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+}
+
+.hero-trust {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 6px;
+  border-radius: 999px;
+  background: var(--surface-1);
+  border: 0.5px solid var(--stroke);
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+.hero-trust .chip-dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--gradient);
+  display: grid; place-items: center;
+  color: var(--bg);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.hero h1 {
+  font-size: clamp(42px, 7.2vw, 84px);
+  line-height: 1.00;
+  font-weight: 900;
+  letter-spacing: -0.045em;
+}
+.hero h1 .accent {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding-right: 0.05em;
+}
+
+.hero p.lead {
+  margin-top: 22px;
+  font-size: clamp(16px, 1.9vw, 20px);
+  color: var(--text-muted);
+  max-width: 520px;
+  line-height: 1.55;
+}
+
+.hero-ctas {
+  margin-top: 34px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.hero-meta {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 28px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.hero-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.hero-meta svg { width: 15px; height: 15px; color: var(--theme-ring); }
+
+/* ---------- Phone mockup ---------- */
+.phone-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.phone {
+  position: relative;
+  width: min(320px, 78vw);
+  aspect-ratio: 9 / 19.5;
+  border-radius: 48px;
+  background: #1a1a22;
+  padding: 10px;
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 0 0 2px rgba(0, 0, 0, 0.8);
+  transform: rotate(-2deg);
+  transition: transform 0.6s cubic-bezier(.2,.7,.2,1);
+}
+.phone:hover { transform: rotate(0deg) translateY(-6px); }
+
+.phone-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 40px;
+  background: var(--bg);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* screen aurora */
+.phone-screen::before, .phone-screen::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  pointer-events: none;
+}
+.phone-screen::before {
+  width: 260px; height: 260px;
+  background: var(--theme-from);
+  opacity: 0.25;
+  top: -100px; left: -100px;
+}
+.phone-screen::after {
+  width: 240px; height: 240px;
+  background: var(--theme-to);
+  opacity: 0.18;
+  bottom: -80px; right: -60px;
+}
+
+/* Dynamic island */
+.island {
+  position: absolute;
+  top: 10px; left: 50%;
+  transform: translateX(-50%);
+  width: 90px; height: 26px;
+  background: #000;
+  border-radius: 999px;
+  z-index: 10;
+}
+
+.screen-content {
+  position: relative;
+  z-index: 2;
+  padding: 52px 16px 20px;
+  color: var(--text);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.screen-header h3 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-top: 2px;
+}
+.screen-header .eyebrow { font-size: 9px; letter-spacing: 0.18em; }
+.screen-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.screen-add {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--gradient);
+  display: grid; place-items: center;
+  color: var(--bg);
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow: 0 6px 16px rgba(255, 138, 91, 0.4);
+}
+
+.stat-chips {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  margin-top: 6px;
+}
+.stat-chip {
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px solid var(--hairline);
+  border-radius: 12px;
+}
+.stat-chip .l { font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); font-weight: 600; }
+.stat-chip .v { font-size: 12px; font-weight: 700; letter-spacing: -0.01em; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.stat-chip .s { font-size: 8px; color: var(--text-muted); margin-top: 1px; }
+
+.alarm-card {
+  position: relative;
+  padding: 14px 14px 14px 18px;
+  background: var(--card-solid);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  overflow: hidden;
+}
+.alarm-card .indicator {
+  position: absolute;
+  top: 14px; bottom: 14px; left: 8px;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--gradient);
+  box-shadow: 0 0 10px rgba(255, 138, 91, 0.45);
+}
+.alarm-card.off {
+  background: rgba(22, 22, 28, 0.4);
+}
+.alarm-card.off .indicator { display: none; }
+.alarm-card.off .time, .alarm-card.off .days span { color: var(--text-dim); }
+.alarm-card.off .label { color: var(--text-muted); }
+
+.alarm-time {
+  display: flex; align-items: baseline; gap: 4px;
+}
+.alarm-time .time {
+  font-size: 34px;
+  font-weight: 200;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.alarm-time .period {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+.alarm-meta {
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--text-muted);
+  display: flex; gap: 6px; align-items: center;
+}
+.alarm-meta .label { color: var(--text); font-weight: 600; font-size: 10px; }
+.alarm-meta .dot { opacity: 0.5; }
+.days {
+  margin-top: 8px;
+  display: flex; gap: 3px;
+}
+.days span {
+  width: 16px; height: 16px;
+  display: grid; place-items: center;
+  font-size: 8px; font-weight: 700;
+  border-radius: 50%;
+  border: 0.5px solid var(--hairline);
+  color: var(--text-dim);
+}
+.days span.on {
+  background: rgba(255, 138, 91, 0.18);
+  border-color: rgba(255, 138, 91, 0.4);
+  color: var(--theme-ring);
+}
+
+.toggle {
+  width: 38px; height: 22px; border-radius: 999px;
+  background: var(--theme-ring);
+  position: relative;
+  margin-top: 4px;
+}
+.toggle::after {
+  content: '';
+  position: absolute;
+  right: 2px; top: 2px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.toggle.off {
+  background: rgba(255, 255, 255, 0.22);
+}
+.toggle.off::after {
+  right: auto;
+  left: 2px;
+}
+
+/* ---------- Sections ---------- */
+section { position: relative; padding: clamp(60px, 9vw, 110px) 0; }
+
+.section-head {
+  max-width: 820px;
+  margin-bottom: clamp(36px, 5vw, 64px);
+}
+
+/* ---------- Features ---------- */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+@media (max-width: 960px) { .feature-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .feature-grid { grid-template-columns: 1fr; } }
+
+.feature-card {
+  position: relative;
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 0.5px solid var(--stroke);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 138, 91, 0.25);
+  background: rgba(22, 22, 28, 0.75);
+}
+
+.feature-icon {
+  width: 44px; height: 44px;
+  border-radius: 14px;
+  background: var(--gradient-soft);
+  border: 0.5px solid rgba(255, 138, 91, 0.3);
+  display: grid; place-items: center;
+  margin-bottom: 20px;
+}
+.feature-icon svg {
+  width: 20px; height: 20px;
+  color: var(--theme-ring);
+}
+.feature-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin-bottom: 8px;
+}
+.feature-card p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ---------- Sounds ---------- */
+.sounds-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+@media (max-width: 900px) { .sounds-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 600px) { .sounds-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.sound-card {
+  position: relative;
+  padding: 22px 18px;
+  border-radius: 18px;
+  border: 0.5px solid var(--stroke);
+  background: var(--card);
+  overflow: hidden;
+  cursor: default;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.sound-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--sound-gradient, linear-gradient(135deg, rgba(124, 92, 255, 0.14), transparent));
+  opacity: 0.9;
+  z-index: 0;
+  transition: opacity 0.4s ease;
+}
+.sound-card:hover { transform: translateY(-3px); border-color: rgba(255, 255, 255, 0.16); }
+.sound-card:hover::before { opacity: 1; }
+
+.sound-icon {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  display: grid; place-items: center;
+  color: var(--text);
+  position: relative;
+  z-index: 1;
+}
+.sound-icon svg { width: 18px; height: 18px; }
+.sound-label {
+  position: relative; z-index: 1;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.sound-sub {
+  position: relative; z-index: 1;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ---------- Themes ---------- */
+.themes-block {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+@media (max-width: 900px) { .themes-block { grid-template-columns: 1fr; gap: 40px; } }
+
+.theme-card {
+  padding: 36px 32px;
+  border-radius: var(--radius-lg);
+  background: var(--card-solid);
+  border: 0.5px solid var(--stroke);
+}
+
+.swatches {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.swatch {
+  position: relative;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(.2,.7,.2,1), box-shadow 0.3s ease;
+}
+.swatch:hover { transform: translateY(-4px) scale(1.06); }
+.swatch.active { transform: scale(1.1); }
+.swatch.active::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--swatch-ring);
+}
+.swatch .checkmark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: var(--bg);
+  font-weight: 800;
+  font-size: 14px;
+}
+.swatch.active .checkmark { opacity: 1; }
+
+.theme-name {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-top: 8px;
+}
+
+/* ---------- Clock showcase ---------- */
+.clock-showcase {
+  position: relative;
+  padding: clamp(80px, 14vw, 160px) 0;
+  text-align: center;
+  overflow: hidden;
+}
+.big-clock {
+  display: inline-block;
+  font-size: clamp(100px, 22vw, 240px);
+  font-weight: 200;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 0.9;
+  margin-top: 30px;
+}
+.clock-date {
+  margin-top: 12px;
+  color: var(--text-muted);
+  font-size: clamp(14px, 2vw, 18px);
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Detail showcase ---------- */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+@media (max-width: 820px) { .details-grid { grid-template-columns: 1fr; } }
+
+.detail-card {
+  position: relative;
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 0.5px solid var(--stroke);
+  overflow: hidden;
+}
+.detail-card h3 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin-bottom: 6px;
+}
+.detail-card p {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 360px;
+}
+.detail-card ul {
+  list-style: none;
+  margin-top: 20px;
+  display: grid;
+  gap: 10px;
+}
+.detail-card li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text);
+}
+.detail-card li svg {
+  width: 16px; height: 16px;
+  color: var(--theme-ring);
+  flex-shrink: 0;
+}
+
+/* ---------- Pricing ---------- */
+.pricing-card {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 40px 36px;
+  background: var(--card-solid);
+  border: 0.5px solid var(--stroke);
+  border-radius: var(--radius-xl);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  top: -100px; left: 50%;
+  transform: translateX(-50%);
+  width: 400px; height: 400px;
+  background: var(--theme-from);
+  opacity: 0.18;
+  filter: blur(100px);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.pricing-card > * { position: relative; }
+
+.price-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--gradient);
+  color: var(--bg);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pricing-card h3 {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-top: 16px;
+}
+.pricing-card .sub {
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-size: 15px;
+}
+
+.pricing-list {
+  margin: 28px 0;
+  padding: 22px 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-md);
+  border: 0.5px solid var(--hairline);
+  display: grid;
+  gap: 12px;
+  text-align: left;
+}
+.pricing-list li {
+  list-style: none;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 14px;
+}
+.pricing-list li svg {
+  width: 18px; height: 18px;
+  color: var(--theme-ring);
+  flex-shrink: 0;
+}
+
+.pricing-card .btn-primary { padding: 16px 28px; font-size: 16px; width: 100%; justify-content: center; }
+
+.pricing-fine {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* ---------- FAQ ---------- */
+.faq {
+  max-width: 780px;
+  margin: 0 auto;
+}
+.faq details {
+  border-bottom: 0.5px solid var(--hairline);
+  padding: 22px 4px;
+  transition: background 0.2s ease;
+}
+.faq details[open] summary { color: var(--text); }
+.faq summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: '+';
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+}
+.faq details[open] summary::after { content: '−'; }
+.faq p {
+  margin-top: 14px;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.65;
+  max-width: 640px;
+}
+
+/* ---------- Final CTA ---------- */
+.final-cta {
+  text-align: center;
+  padding: clamp(80px, 14vw, 140px) 0 clamp(40px, 8vw, 80px);
+}
+.final-cta h2 {
+  font-size: clamp(36px, 6vw, 66px);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.04;
+}
+.final-cta h2 .accent {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.final-cta p {
+  margin-top: 20px;
+  color: var(--text-muted);
+  font-size: 18px;
+}
+.final-cta .cta-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 36px;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  border-top: 0.5px solid var(--hairline);
+  padding: 40px 0 60px;
+  color: var(--text-dim);
+}
+footer .footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+footer .foot-links { display: flex; gap: 22px; flex-wrap: wrap; }
+footer .foot-links a { transition: color 0.2s ease; }
+footer .foot-links a:hover { color: var(--text-muted); }
+
+/* ---------- Reveal animations ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.8s cubic-bezier(.2,.7,.2,1), transform 0.8s cubic-bezier(.2,.7,.2,1);
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition-duration: 0.01ms !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Aurora backdrop (fixed behind everything) -->
+<div class="aurora" aria-hidden="true">
+  <div class="aurora-blob a"></div>
+  <div class="aurora-blob b"></div>
+  <div class="aurora-blob c"></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <a class="brand" href="#top" aria-label="Dawn home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4l1.4-1.4M17 7l1.4-1.4"/></svg>
+      </span>
+      <span>Dawn</span>
+    </a>
+    <div class="nav-links" aria-label="Sections">
+      <a href="#features">Features</a>
+      <a href="#sounds">Sounds</a>
+      <a href="#themes">Themes</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a class="nav-cta" href="#pricing">Download</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="top">
+  <div class="container hero-inner">
+    <div class="hero-copy reveal">
+      <div class="hero-trust">
+        <span class="chip-dot">✦</span>
+        Designed for iOS · 15-day free trial
+      </div>
+      <h1>
+        Wake up <span class="accent">kinder.</span><br />
+        Fall asleep <span class="accent">easier.</span>
+      </h1>
+      <p class="lead">
+        A beautifully simple alarm clock and sleep timer for iOS.
+        Gentle sunrise wake-ups, eleven handcrafted ambient sounds,
+        and six gorgeous themes — all in one quiet, ad-free app.
+      </p>
+      <div class="hero-ctas">
+        <a class="app-store-badge" href="#pricing" aria-label="Download on the App Store">
+          <svg width="22" height="26" viewBox="0 0 24 28" fill="currentColor" aria-hidden="true"><path d="M17.3 14.6c0-3 2.5-4.4 2.6-4.5-1.4-2-3.6-2.3-4.4-2.4-1.9-.2-3.6 1.1-4.6 1.1-.9 0-2.4-1.1-4-1-2 0-3.9 1.2-5 3-2.1 3.7-.5 9.2 1.5 12.2 1 1.5 2.2 3.1 3.8 3 1.5 0 2.1-1 3.9-1 1.9 0 2.4 1 4 1 1.6 0 2.7-1.5 3.7-3 1.2-1.7 1.7-3.4 1.7-3.5-.1 0-3.2-1.2-3.2-4.9zm-3-9c.8-1 1.4-2.4 1.3-3.8-1.2 0-2.7.8-3.5 1.8-.8.9-1.5 2.3-1.3 3.7 1.3.1 2.7-.7 3.5-1.7z"/></svg>
+          <span>
+            <span class="small">Download on the</span>
+            <span class="big">App Store</span>
+          </span>
+        </a>
+        <a class="btn btn-ghost" href="#features">See features
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+      <div class="hero-meta">
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          No ads or subscriptions
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Privacy first — no tracking
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Pay once, own forever
+        </span>
+      </div>
+    </div>
+
+    <!-- Phone mockup: CSS-drawn Alarm List -->
+    <div class="phone-wrap reveal">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="island"></div>
+          <div class="screen-content">
+            <div class="screen-header">
+              <div>
+                <div class="eyebrow">Good morning</div>
+                <h3>Alarms</h3>
+              </div>
+              <div class="screen-add" aria-hidden="true">＋</div>
+            </div>
+
+            <div class="stat-chips">
+              <div class="stat-chip">
+                <div class="l">Next</div>
+                <div class="v">07:00</div>
+                <div class="s">Weekdays</div>
+              </div>
+              <div class="stat-chip">
+                <div class="l">Active</div>
+                <div class="v">2</div>
+                <div class="s">of 3</div>
+              </div>
+              <div class="stat-chip">
+                <div class="l">Wake</div>
+                <div class="v">Gentle</div>
+                <div class="s">Sunrise</div>
+              </div>
+            </div>
+
+            <div class="alarm-card">
+              <div class="indicator"></div>
+              <div>
+                <div class="alarm-time"><span class="time">7:00</span><span class="period">AM</span></div>
+                <div class="alarm-meta"><span class="label">Morning run</span><span class="dot">·</span><span>Mon–Fri</span></div>
+                <div class="days">
+                  <span>S</span><span class="on">M</span><span class="on">T</span><span class="on">W</span><span class="on">T</span><span class="on">F</span><span>S</span>
+                </div>
+              </div>
+              <div class="toggle"></div>
+            </div>
+
+            <div class="alarm-card off">
+              <div>
+                <div class="alarm-time"><span class="time">8:30</span><span class="period">AM</span></div>
+                <div class="alarm-meta"><span class="label">Gym</span><span class="dot">·</span><span>Weekends</span></div>
+                <div class="days">
+                  <span class="on">S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span class="on">S</span>
+                </div>
+              </div>
+              <div class="toggle off"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">Made for mornings</div>
+      <h2 class="section-title">Every detail tuned<br />for how you actually wake up.</h2>
+      <p class="section-lead">
+        Not another reskinned clock. Every alarm, toggle, and transition is built
+        around a single goal: make the first and last minute of your day feel better.
+      </p>
+    </div>
+
+    <div class="feature-grid">
+      <!-- Cards generated below — keep in the same layout on every screen size -->
+      <div class="feature-card reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="8"/><path d="M12 10v4l2 2M8 2l-4 3M16 2l4 3"/></svg>
+        </div>
+        <h3>Sunrise wake-up</h3>
+        <p>Gentle gradient alarms ramp up over minutes instead of blasting you awake. Pair with piano, acoustic music, or nature sounds for a calm start.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </div>
+        <h3>Sleep timer</h3>
+        <p>Drift off to eleven handcrafted ambient sounds. Each one fades out gently so you never wake when it ends — no jarring silence.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M12 8v4l3 2"/></svg>
+        </div>
+        <h3>Full-screen clock</h3>
+        <p>Digital, analog, or hybrid clock face. Keep-screen-on mode turns your phone into a beautiful bedside clock — weather and dimmed brightness included.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a3 3 0 0 1 6 0v5M5 11h14v10H5z"/></svg>
+        </div>
+        <h3>Smart dismiss</h3>
+        <p>Heavy sleeper? Solve a math problem. Light sleeper? A gentle slide or double-tap. Pick how hard it is to turn your alarm off — per alarm.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0-6 6c0 4 4 5 4 8h4c0-3 4-4 4-8a6 6 0 0 0-6-6zM10 21h4"/></svg>
+        </div>
+        <h3>Six gorgeous themes</h3>
+        <p>Aurora, Indigo, Ocean, Mint, Rose, Sand. Every gradient and shadow designed to feel premium. Match your mood or match your nightstand.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="12" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        </div>
+        <h3>Private by design</h3>
+        <p>Everything stays on your device. No account. No tracking. No ads. Ever. Pay once for the app, then forget we exist until your alarm rings.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Sounds -->
+<section id="sounds">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">Eleven handcrafted sounds</div>
+      <h2 class="section-title">Drift off to something<br />actually beautiful.</h2>
+      <p class="section-lead">
+        Every sound is generated in real time inside the app — no compressed MP3s,
+        no looping artefacts, no crackle at the seam. Crafted with pink noise,
+        harmonics, and gentle amplitude modulation.
+      </p>
+    </div>
+
+    <div class="sounds-grid">
+      <div class="sound-card reveal" style="--sound-gradient: linear-gradient(135deg, rgba(43, 182, 255, 0.28), rgba(66, 232, 213, 0.12));">
+        <div class="sound-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 19v2M12 19v2M16 19v2M5 13a4 4 0 0 1 4-4 5 5 0 0 1 9.5-1A4 4 0 0 1 18 15H5z"/></svg></div>
+        <div>
+          <div class="sound-label">Rain</div>
+          <div class="sound-sub">Soft patter</div>
+        </div>
+      </div>
+
+      <div class="sound-card reveal" style="--sound-gradient: linear-gradient(135deg, rgba(43, 182, 255, 0.32), rgba(124, 92, 255, 0.14));">
+        <div class="sound-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0 4 2 6 0M2 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0 4 2 6 0"/></svg></div>
+        <div>
+          <div class="sound-label">Ocean Waves</div>
+          <div class="sound-sub">Rolling surf</div>
+        </div>
+      </div>
+
+      <div class="sound-card reveal" style="--sound-gradient: linear-gradient(135deg, rgba(46, 230, 168, 0.28), rgba(155, 240, 160, 0.14));">
+        <div class="sound-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20v-6M7 14c-2 0-4-2-4-5s2-4 4-4 2 2 2 2 1-3 4-3 4 3 4 3 1-1 3-1 3 2 3 4-2 4-4 4M12 20v-8"/></svg></div>
+        <div>
+          <div class="sound-label">Forest</div>
+          <div class="sound-sub">Leaves &amp; birdsong</div>
+        </div>
+      </div>
+
+      <div class="sound-card reveal" style="--sound-gradient: linear-gradient(135deg, rgba(176, 108, 255, 0.32), rgba(124, 92, 255, 0.12));">
+        <div class="sound-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div>
+        <div>
+          <div class="sound-label">Thunder</div>
+          <div class="sound-sub">Distant storm</div>
+        </div>
+      </div>
+
+      <div class="sound-card reveal" style="--sound-gradient: linear-gradient(135deg, rgba(245, 243, 238, 0.12), rgba(46, 230, 168, 0.12));">
+        <div class="sound-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h14a3 3 0 1 0-3-3M3 18h18a2 2 0 1 0-2-2"/></svg></div>
+        <div>
+          <div class="sound-label">Wind</div>
+          <div class="sound-sub">Through trees</div>
+        </div>
+      </div>
+
+      <div class="sound-card reveal" style="--sound-gradient: linear-gradient(135deg, rgba(66, 232, 213, 0.28), rgba(43, 182, 255, 0.12));">
+        <div class="sound-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c3 0 3-4 6-4s3 4 6 4 3-4 6-4M3 18c3 0 3-4 6-4s3 4 6 4 3-4 6-4"/></svg></div>
+        <div>
+          <div class="sound-label">Creek</div>
+          <div class="sound-sub">Running water</div>
+        </div>
+      </div>
+
+      <div class="sound-card reveal" style="--sound-gradient: linear-gradient(135deg, rgba(245, 243, 238, 0.14), rgba(245, 243, 238, 0.04));">
+        <div class="sound-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></div>
+        <div>
+          <div class="sound-label">White Noise</div>
+          <div class="sound-sub">Even hush</div>
+        </div>
+      </div>
+
+      <div class="sound-card reveal" style="--sound-gradient: linear-gradient(135deg, rgba(124, 92, 255, 0.24), rgba(11, 11, 15, 0.3));">
+        <div class="sound-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></div>
+        <div>
+          <div class="sound-label">Night Sounds</div>
+          <div class="sound-sub">Crickets &amp; still</div>
+        </div>
+      </div>
+
+      <div class="sound-card reveal" style="--sound-gradient: linear-gradient(135deg, rgba(255, 194, 102, 0.24), rgba(255, 138, 91, 0.12));">
+        <div class="sound-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4v16M16 7v10M4 9v6M12 2v20M20 9v6"/></svg></div>
+        <div>
+          <div class="sound-label">Gentle Piano</div>
+          <div class="sound-sub">Soft keys</div>
+        </div>
+      </div>
+
+      <div class="sound-card reveal" style="--sound-gradient: linear-gradient(135deg, rgba(230, 199, 138, 0.28), rgba(255, 230, 184, 0.14));">
+        <div class="sound-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13M9 13l12-2M6 18a3 3 0 1 1-3-3"/></svg></div>
+        <div>
+          <div class="sound-label">Acoustic Morning</div>
+          <div class="sound-sub">Warm guitar</div>
+        </div>
+      </div>
+
+      <div class="sound-card reveal" style="--sound-gradient: linear-gradient(135deg, rgba(255, 138, 91, 0.28), rgba(255, 194, 102, 0.14));">
+        <div class="sound-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="5"/><path d="M12 3v2M12 21h0M3 14h2M19 14h2M5.6 7.6l1.4 1.4M17 9l1.4-1.4"/></svg></div>
+        <div>
+          <div class="sound-label">Sunrise Melody</div>
+          <div class="sound-sub">Gentle awakening</div>
+        </div>
+      </div>
+
+      <div class="sound-card reveal" style="background: var(--gradient); border: none;">
+        <div class="sound-icon" style="background: rgba(11, 11, 15, 0.3);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></div>
+        <div>
+          <div class="sound-label" style="color: var(--bg);">More coming</div>
+          <div class="sound-sub" style="color: rgba(11, 11, 15, 0.65);">Each update adds one</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Themes -->
+<section id="themes">
+  <div class="container themes-block">
+    <div class="reveal">
+      <div class="eyebrow">Six signature themes</div>
+      <h2 class="section-title">Tap a swatch.<br />Watch the page change.</h2>
+      <p class="section-lead">
+        Every element of Dawn — every gradient, every glow, every button —
+        flows from a single theme colour. The same palette lives on this
+        page: pick one below and see it applied everywhere in real time.
+      </p>
+      <div class="swatches" role="radiogroup" aria-label="Theme swatches">
+        <button class="swatch active" data-theme="aurora" style="background: linear-gradient(135deg, #FF8A5B, #FFC266); --swatch-ring: #FF8A5B;" aria-label="Aurora theme"><span class="checkmark">✓</span></button>
+        <button class="swatch" data-theme="indigo" style="background: linear-gradient(135deg, #7C5CFF, #B06CFF); --swatch-ring: #9B7BFF;" aria-label="Indigo theme"><span class="checkmark">✓</span></button>
+        <button class="swatch" data-theme="ocean" style="background: linear-gradient(135deg, #2BB6FF, #42E8D5); --swatch-ring: #42E8D5;" aria-label="Ocean theme"><span class="checkmark">✓</span></button>
+        <button class="swatch" data-theme="mint" style="background: linear-gradient(135deg, #2EE6A8, #9BF0A0); --swatch-ring: #52E6A8;" aria-label="Mint theme"><span class="checkmark">✓</span></button>
+        <button class="swatch" data-theme="rose" style="background: linear-gradient(135deg, #FF5D8F, #FFA6AE); --swatch-ring: #FF7AA0;" aria-label="Rose theme"><span class="checkmark">✓</span></button>
+        <button class="swatch" data-theme="sand" style="background: linear-gradient(135deg, #E6C78A, #FFE6B8); --swatch-ring: #E6C78A;" aria-label="Sand theme"><span class="checkmark">✓</span></button>
+      </div>
+    </div>
+
+    <div class="theme-card reveal">
+      <div class="eyebrow">Active theme</div>
+      <div class="theme-name" id="active-theme-name">Aurora</div>
+      <p style="color: var(--text-muted); font-size: 14px; margin-top: 4px;" id="active-theme-desc">
+        Warm sunrise. The default Dawn palette — orange to amber.
+      </p>
+
+      <div style="margin-top: 28px; display: grid; gap: 10px;">
+        <div style="padding: 14px 16px; background: rgba(255, 255, 255, 0.04); border: 0.5px solid var(--hairline); border-radius: 14px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 11px; letter-spacing: 0.08em; color: var(--text-dim); font-weight: 600;">NEXT ALARM</div>
+            <div style="font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-top: 2px; font-variant-numeric: tabular-nums;">07:00 AM</div>
+          </div>
+          <div class="toggle" style="width: 46px; height: 28px; border-radius: 999px;"></div>
+        </div>
+        <div style="padding: 14px 16px; background: rgba(255, 255, 255, 0.04); border: 0.5px solid var(--hairline); border-radius: 14px; display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-size: 14px; font-weight: 600;">Gentle wake</div>
+          <div class="toggle" style="width: 46px; height: 28px; border-radius: 999px;"></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top: 6px; width: 100%; justify-content: center;">Preview alarm
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Live clock showcase -->
+<section class="clock-showcase">
+  <div class="container">
+    <div class="reveal">
+      <div class="eyebrow">Bedside clock</div>
+      <div class="big-clock" id="live-clock">00:00</div>
+      <div class="clock-date" id="live-date">Your nightstand, upgraded</div>
+    </div>
+  </div>
+</section>
+
+<!-- Details -->
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">Small things, measured carefully</div>
+      <h2 class="section-title">The details you only<br />notice when they're right.</h2>
+    </div>
+
+    <div class="details-grid">
+      <div class="detail-card reveal">
+        <h3>Reliable through silence</h3>
+        <p>iOS caps each notification sound at 30 seconds. Dawn chains thirty of them into a continuous 15-minute wake-up that stops the instant you tap — not a second later.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Rings even in silent mode</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Survives app being closed</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Auto re-arms each morning</li>
+        </ul>
+      </div>
+
+      <div class="detail-card reveal">
+        <h3>Built to feel good</h3>
+        <p>Haptic-tuned toggles, smooth 0.38s spring transitions, ultra-thin material cards — the same primitives Apple uses. Every animation re-checks itself at 120&nbsp;Hz on ProMotion devices.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Soft haptics on every tap</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Dynamic Type support</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Fully VoiceOver-accessible</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section id="pricing">
+  <div class="container">
+    <div class="section-head reveal" style="text-align: center; margin-left: auto; margin-right: auto;">
+      <div class="eyebrow">Simple pricing</div>
+      <h2 class="section-title">Free for 15 days.<br />Then pay once. That's it.</h2>
+      <p class="section-lead" style="margin-left: auto; margin-right: auto;">No subscriptions. No ads. No account to sign up for.</p>
+    </div>
+
+    <div class="pricing-card reveal">
+      <div class="price-badge">✦ 15-day free trial</div>
+      <h3>Unlock full version</h3>
+      <div class="sub">Every feature, forever — for one payment.</div>
+
+      <ul class="pricing-list">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Unlimited alarms with repeat schedules</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>All eleven ambient sounds and sleep timer</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Every theme, including future ones</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Full-screen bedside clock &amp; weather</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>No ads, no tracking, no subscriptions</li>
+      </ul>
+
+      <a class="btn btn-primary" href="#" aria-label="Get Dawn on the App Store">
+        Start your 15 days free
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <div class="pricing-fine">Requires iOS 17 or later · Available on the App Store</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-head reveal" style="text-align: center; margin-left: auto; margin-right: auto;">
+      <div class="eyebrow">Questions</div>
+      <h2 class="section-title">Good to know.</h2>
+    </div>
+
+    <div class="faq">
+      <details class="reveal" open>
+        <summary>How does the 15-day trial work?</summary>
+        <p>Every feature is unlocked automatically for your first 15 days — no credit card, no sign-up. When the trial ends, you can unlock the full version with a one-time purchase. If you skip the purchase, Dawn still works for core alarm use, but premium features will ask to unlock.</p>
+      </details>
+      <details class="reveal">
+        <summary>Does Dawn work if I force-quit the app?</summary>
+        <p>Yes. Alarms use iOS local notifications, so they fire even when the app isn't running. The chain scheduler ensures your alarm rings continuously for up to 15 minutes — plenty of time even for heavy sleepers.</p>
+      </details>
+      <details class="reveal">
+        <summary>Will alarms ring on silent / Do Not Disturb?</summary>
+        <p>Yes. Dawn uses time-sensitive notifications with custom sounds, which iOS allows through silent mode and Focus. Make sure to grant notification permission on first launch — that's the only permission needed.</p>
+      </details>
+      <details class="reveal">
+        <summary>Do you collect any data?</summary>
+        <p>No. Dawn has no account system, no analytics, and no third-party SDKs. Your alarms, settings, and purchase status live entirely on your device. Weather uses Apple WeatherKit and never leaves Apple's servers.</p>
+      </details>
+      <details class="reveal">
+        <summary>Why a one-time purchase and not a subscription?</summary>
+        <p>An alarm clock doesn't need monthly server costs. Charging you forever for something that wakes you up would be weird. Pay once, own it forever — that's how software used to work, and for Dawn it still does.</p>
+      </details>
+      <details class="reveal">
+        <summary>Can I use Dawn on my iPad too?</summary>
+        <p>Yes. Dawn is a universal app — one purchase covers iPhone and iPad. The bedside clock mode looks especially lovely on iPad.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta">
+  <div class="container reveal">
+    <h2>Your mornings deserve <span class="accent">better.</span></h2>
+    <p>Start your 15 days free. Sleep better tonight. Wake up smiling tomorrow.</p>
+    <div class="cta-row">
+      <a class="app-store-badge" href="#" aria-label="Download on the App Store">
+        <svg width="22" height="26" viewBox="0 0 24 28" fill="currentColor" aria-hidden="true"><path d="M17.3 14.6c0-3 2.5-4.4 2.6-4.5-1.4-2-3.6-2.3-4.4-2.4-1.9-.2-3.6 1.1-4.6 1.1-.9 0-2.4-1.1-4-1-2 0-3.9 1.2-5 3-2.1 3.7-.5 9.2 1.5 12.2 1 1.5 2.2 3.1 3.8 3 1.5 0 2.1-1 3.9-1 1.9 0 2.4 1 4 1 1.6 0 2.7-1.5 3.7-3 1.2-1.7 1.7-3.4 1.7-3.5-.1 0-3.2-1.2-3.2-4.9zm-3-9c.8-1 1.4-2.4 1.3-3.8-1.2 0-2.7.8-3.5 1.8-.8.9-1.5 2.3-1.3 3.7 1.3.1 2.7-.7 3.5-1.7z"/></svg>
+        <span>
+          <span class="small">Download on the</span>
+          <span class="big">App Store</span>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container footer-inner">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4l1.4-1.4M17 7l1.4-1.4"/></svg>
+      </span>
+      <span>© <span id="year">2026</span> Dawn. Made with care.</span>
+    </div>
+    <div class="foot-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a href="mailto:hello@example.com">Support</a>
+      <a href="#">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ---------- Theme switcher ----------
+// All six themes mirror the in-app `DawnTheme` enum so this page feels
+// identical to the app when a swatch is selected.
+const THEMES = {
+  aurora: { from: '#FF8A5B', to: '#FFC266', ring: '#FF8A5B', name: 'Aurora', desc: 'Warm sunrise. The default Dawn palette — orange to amber.' },
+  indigo: { from: '#7C5CFF', to: '#B06CFF', ring: '#9B7BFF', name: 'Indigo', desc: 'Deep night. Violet to soft orchid — calm and focused.' },
+  ocean:  { from: '#2BB6FF', to: '#42E8D5', ring: '#42E8D5', name: 'Ocean',  desc: 'Clean coast. Sky blue into aqua — fresh and alert.' },
+  mint:   { from: '#2EE6A8', to: '#9BF0A0', ring: '#52E6A8', name: 'Mint',   desc: 'Morning garden. Emerald fading into spring green.' },
+  rose:   { from: '#FF5D8F', to: '#FFA6AE', ring: '#FF7AA0', name: 'Rose',   desc: 'Soft bloom. Magenta to peach — playful but grown up.' },
+  sand:   { from: '#E6C78A', to: '#FFE6B8', ring: '#E6C78A', name: 'Sand',   desc: 'Desert dawn. Honey to cream — warm, neutral, quiet.' }
+};
+
+function applyTheme(key) {
+  const t = THEMES[key];
+  if (!t) return;
+  const root = document.documentElement;
+  root.style.setProperty('--theme-from', t.from);
+  root.style.setProperty('--theme-to',   t.to);
+  root.style.setProperty('--theme-ring', t.ring);
+  // Gradient + soft variant rebuild
+  root.style.setProperty('--gradient', `linear-gradient(135deg, ${t.from}, ${t.to})`);
+  const rgb = hexToRgb(t.from);
+  if (rgb) {
+    root.style.setProperty('--gradient-soft',
+      `linear-gradient(135deg, rgba(${rgb.r},${rgb.g},${rgb.b},0.18), rgba(${rgb.r},${rgb.g},${rgb.b},0.06))`);
+  }
+  // Update swatch active state
+  document.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.theme === key));
+  // Update theme card copy
+  const nameEl = document.getElementById('active-theme-name');
+  const descEl = document.getElementById('active-theme-desc');
+  if (nameEl) nameEl.textContent = t.name;
+  if (descEl) descEl.textContent = t.desc;
+}
+
+function hexToRgb(hex) {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return m ? { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) } : null;
+}
+
+document.querySelectorAll('.swatch').forEach(btn => {
+  btn.addEventListener('click', () => applyTheme(btn.dataset.theme));
+});
+
+// ---------- Live clock ----------
+// Ticks once per minute — good enough and avoids burning CPU for a decorative element.
+function updateClock() {
+  const el = document.getElementById('live-clock');
+  const dateEl = document.getElementById('live-date');
+  if (!el) return;
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  el.textContent = `${h}:${m}`;
+  if (dateEl) {
+    const opts = { weekday: 'long', month: 'long', day: 'numeric' };
+    dateEl.textContent = now.toLocaleDateString(undefined, opts);
+  }
+}
+updateClock();
+setInterval(updateClock, 15_000);
+
+// ---------- Scroll reveal ----------
+// IntersectionObserver adds .in to any .reveal once it enters the viewport.
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+} else {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+}
+
+// ---------- Footer year ----------
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
