@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Money Tracker - Smart Personal Finance Manager</title>
+  <meta name="description" content="Money Tracker helps you track expenses, manage budgets, and achieve your financial goals. Available on the App Store.">
+  <meta name="keywords" content="money tracker, expense tracker, budget app, finance manager, iOS app">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Money Tracker - Smart Personal Finance Manager">
+  <meta property="og:description" content="Track expenses, manage budgets, and achieve your financial goals effortlessly.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="images/og-image.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="container nav-container">
+      <a href="#" class="nav-logo">
+        <img src="images/app-icon.svg" alt="Money Tracker" class="nav-icon">
+        <span>Money Tracker</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#screenshots">Screenshots</a>
+        <a href="#reviews">Reviews</a>
+      </div>
+      <a href="#download" class="nav-cta">Download Free</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#features">Features</a>
+    <a href="#screenshots">Screenshots</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#download" class="mobile-cta">Download Free</a>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+    <div class="container hero-container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor"/></svg>
+          #1 Finance App in 20+ Countries
+        </div>
+        <h1>Take Control of Your <span class="gradient-text">Money</span></h1>
+        <p class="hero-subtitle">
+          Track expenses effortlessly, set smart budgets, and reach your financial goals.
+          Money Tracker makes personal finance simple, beautiful, and powerful.
+        </p>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-number" data-count="500">0</span><span class="stat-suffix">K+</span>
+            <span class="stat-label">Downloads</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-number" data-count="4.8">0</span>
+            <span class="stat-label">App Store Rating</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-number" data-count="50">0</span><span class="stat-suffix">+</span>
+            <span class="stat-label">Currencies</span>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <a href="https://apps.apple.com/app/money-tracker-easy-smart/id6761291672" class="btn btn-primary btn-lg">
+            <svg width="20" height="24" viewBox="0 0 20 24" fill="currentColor"><path d="M15.07 12.95c-.03-2.77 2.26-4.1 2.36-4.17-1.29-1.88-3.29-2.14-4-2.17-1.7-.17-3.33 1-4.19 1-.87 0-2.2-.98-3.62-.95-1.86.03-3.58 1.08-4.54 2.75-1.94 3.36-.5 8.33 1.39 11.05.92 1.33 2.02 2.83 3.47 2.78 1.39-.06 1.91-.9 3.59-.9 1.67 0 2.14.9 3.61.87 1.5-.03 2.45-1.36 3.36-2.69 1.06-1.54 1.5-3.04 1.52-3.12-.03-.01-2.92-1.12-2.95-4.45zM12.32 4.3c.77-.93 1.28-2.22 1.14-3.51-1.1.04-2.44.73-3.23 1.66-.71.82-1.33 2.13-1.16 3.39 1.23.1 2.48-.62 3.25-1.54z"/></svg>
+            Download on App Store
+          </a>
+          <a href="#features" class="btn btn-outline btn-lg">
+            Learn More
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="phone-mockup">
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <!-- App Dashboard Mockup -->
+              <div class="app-screen">
+                <div class="app-header">
+                  <div class="app-greeting">Good Morning!</div>
+                  <div class="app-avatar">H</div>
+                </div>
+                <div class="app-balance-card">
+                  <div class="app-balance-label">Total Balance</div>
+                  <div class="app-balance-amount">$12,480.50</div>
+                  <div class="app-balance-change">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34C759" stroke-width="3"><path d="M7 17l5-5 5 5M7 7l5 5 5-5"/></svg>
+                    +12.5% this month
+                  </div>
+                </div>
+                <div class="app-quick-actions">
+                  <div class="app-action"><div class="app-action-icon income">+</div><span>Income</span></div>
+                  <div class="app-action"><div class="app-action-icon expense">-</div><span>Expense</span></div>
+                  <div class="app-action"><div class="app-action-icon transfer">&#8644;</div><span>Transfer</span></div>
+                  <div class="app-action"><div class="app-action-icon budget">&#9783;</div><span>Budget</span></div>
+                </div>
+                <div class="app-transactions">
+                  <div class="app-section-title">Recent Transactions</div>
+                  <div class="app-transaction">
+                    <div class="app-tx-icon" style="background:#FF9500;">&#127828;</div>
+                    <div class="app-tx-info"><div class="app-tx-name">Food & Dining</div><div class="app-tx-date">Today, 12:30 PM</div></div>
+                    <div class="app-tx-amount negative">-$24.50</div>
+                  </div>
+                  <div class="app-transaction">
+                    <div class="app-tx-icon" style="background:#34C759;">&#128176;</div>
+                    <div class="app-tx-info"><div class="app-tx-name">Salary</div><div class="app-tx-date">Mar 25, 9:00 AM</div></div>
+                    <div class="app-tx-amount positive">+$5,200.00</div>
+                  </div>
+                  <div class="app-transaction">
+                    <div class="app-tx-icon" style="background:#5856D6;">&#128661;</div>
+                    <div class="app-tx-info"><div class="app-tx-name">Transportation</div><div class="app-tx-date">Mar 24, 8:15 AM</div></div>
+                    <div class="app-tx-amount negative">-$12.00</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Floating Cards -->
+        <div class="floating-card card-1">
+          <div class="fc-icon">&#128200;</div>
+          <div class="fc-text">
+            <div class="fc-title">Savings Goal</div>
+            <div class="fc-value">78% reached</div>
+          </div>
+        </div>
+        <div class="floating-card card-2">
+          <div class="fc-icon">&#128176;</div>
+          <div class="fc-text">
+            <div class="fc-title">Budget Left</div>
+            <div class="fc-value">$1,245.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trusted By Section -->
+  <section class="trusted-section">
+    <div class="container">
+      <p class="trusted-label">Featured On</p>
+      <div class="trusted-logos">
+        <div class="trusted-logo">TechCrunch</div>
+        <div class="trusted-logo">Forbes</div>
+        <div class="trusted-logo">ProductHunt</div>
+        <div class="trusted-logo">AppAdvice</div>
+        <div class="trusted-logo">9to5Mac</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Features</span>
+        <h2>Everything You Need to <br><span class="gradient-text">Master Your Finances</span></h2>
+        <p>Powerful tools designed to make personal finance management effortless and intuitive.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card" data-aos="fade-up">
+          <div class="feature-icon" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <h3>Instant Tracking</h3>
+          <p>Record expenses in seconds with smart categorization and receipt scanning powered by AI.</p>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="feature-icon" style="background: linear-gradient(135deg, #4ECDC4, #44B09E);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          </div>
+          <h3>Smart Budgets</h3>
+          <p>Set spending limits by category and get real-time alerts before you overspend.</p>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="feature-icon" style="background: linear-gradient(135deg, #667EEA, #764BA2);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <h3>Savings Goals</h3>
+          <p>Create and track savings goals with visual progress indicators and milestone celebrations.</p>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="feature-icon" style="background: linear-gradient(135deg, #F093FB, #F5576C);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <h3>Visual Reports</h3>
+          <p>Beautiful charts and insights show exactly where your money goes each month.</p>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+          <div class="feature-icon" style="background: linear-gradient(135deg, #FCCB90, #D57EEB);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Bank-Level Security</h3>
+          <p>256-bit encryption, Face ID, and Touch ID keep your financial data private and secure.</p>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+          <div class="feature-icon" style="background: linear-gradient(135deg, #43E97B, #38F9D7);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          </div>
+          <h3>Multi-Currency</h3>
+          <p>Support for 50+ currencies with real-time exchange rates for global travelers.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- App Screenshots / How It Works -->
+  <section class="screenshots-section" id="screenshots">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Screenshots</span>
+        <h2>Beautifully Designed <br><span class="gradient-text">For Every Moment</span></h2>
+        <p>A clean, intuitive interface that makes managing your money a delight.</p>
+      </div>
+      <div class="screenshots-carousel">
+        <div class="screenshot-item active">
+          <div class="screenshot-phone">
+            <div class="sp-notch"></div>
+            <div class="sp-screen dashboard-screen">
+              <div class="sp-status-bar">9:41</div>
+              <div class="sp-title">Dashboard</div>
+              <div class="sp-card gradient-card">
+                <div class="sp-card-label">Total Balance</div>
+                <div class="sp-card-value">$12,480.50</div>
+                <div class="sp-card-bar"><div class="sp-card-bar-fill" style="width:72%"></div></div>
+                <div class="sp-card-sub">72% of monthly budget remaining</div>
+              </div>
+              <div class="sp-chart-area">
+                <svg viewBox="0 0 200 80" class="sp-chart">
+                  <defs><linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#667EEA" stop-opacity="0.3"/><stop offset="100%" stop-color="#667EEA" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 60 Q25 45, 50 50 T100 35 T150 25 T200 15 V80 H0 Z" fill="url(#chartGrad)"/>
+                  <path d="M0 60 Q25 45, 50 50 T100 35 T150 25 T200 15" fill="none" stroke="#667EEA" stroke-width="2.5"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="screenshot-label">Dashboard</div>
+        </div>
+        <div class="screenshot-item">
+          <div class="screenshot-phone">
+            <div class="sp-notch"></div>
+            <div class="sp-screen transactions-screen">
+              <div class="sp-status-bar">9:41</div>
+              <div class="sp-title">Transactions</div>
+              <div class="sp-search-bar">&#128269; Search transactions...</div>
+              <div class="sp-tx-list">
+                <div class="sp-date-header">Today</div>
+                <div class="sp-tx-row"><div class="sp-tx-dot" style="background:#FF9500"></div><div class="sp-tx-detail"><strong>Coffee Shop</strong><br><small>Food & Drink</small></div><div class="sp-tx-amt red">-$4.50</div></div>
+                <div class="sp-tx-row"><div class="sp-tx-dot" style="background:#5856D6"></div><div class="sp-tx-detail"><strong>Uber Ride</strong><br><small>Transport</small></div><div class="sp-tx-amt red">-$12.00</div></div>
+                <div class="sp-date-header">Yesterday</div>
+                <div class="sp-tx-row"><div class="sp-tx-dot" style="background:#34C759"></div><div class="sp-tx-detail"><strong>Freelance Payment</strong><br><small>Income</small></div><div class="sp-tx-amt green">+$850.00</div></div>
+                <div class="sp-tx-row"><div class="sp-tx-dot" style="background:#FF3B30"></div><div class="sp-tx-detail"><strong>Grocery Store</strong><br><small>Food & Drink</small></div><div class="sp-tx-amt red">-$67.30</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="screenshot-label">Transactions</div>
+        </div>
+        <div class="screenshot-item">
+          <div class="screenshot-phone">
+            <div class="sp-notch"></div>
+            <div class="sp-screen analytics-screen">
+              <div class="sp-status-bar">9:41</div>
+              <div class="sp-title">Analytics</div>
+              <div class="sp-pie-chart">
+                <svg viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#667EEA" stroke-width="20" stroke-dasharray="94.25 220" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#F5576C" stroke-width="20" stroke-dasharray="62.83 220" stroke-dashoffset="-94.25" transform="rotate(-90 60 60)"/>
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#43E97B" stroke-width="20" stroke-dasharray="47.12 220" stroke-dashoffset="-157.08" transform="rotate(-90 60 60)"/>
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#FCCB90" stroke-width="20" stroke-dasharray="31.42 220" stroke-dashoffset="-204.2" transform="rotate(-90 60 60)"/>
+                  <text x="60" y="56" text-anchor="middle" fill="white" font-size="14" font-weight="700">$2,340</text>
+                  <text x="60" y="70" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="8">This Month</text>
+                </svg>
+              </div>
+              <div class="sp-legend">
+                <div class="sp-legend-item"><span style="background:#667EEA"></span>Housing 30%</div>
+                <div class="sp-legend-item"><span style="background:#F5576C"></span>Food 20%</div>
+                <div class="sp-legend-item"><span style="background:#43E97B"></span>Transport 15%</div>
+                <div class="sp-legend-item"><span style="background:#FCCB90"></span>Entertainment 10%</div>
+              </div>
+            </div>
+          </div>
+          <div class="screenshot-label">Analytics</div>
+        </div>
+        <div class="screenshot-item">
+          <div class="screenshot-phone">
+            <div class="sp-notch"></div>
+            <div class="sp-screen goals-screen">
+              <div class="sp-status-bar">9:41</div>
+              <div class="sp-title">Savings Goals</div>
+              <div class="sp-goals-list">
+                <div class="sp-goal-card">
+                  <div class="sp-goal-emoji">&#9992;&#65039;</div>
+                  <div class="sp-goal-info">
+                    <strong>Vacation Fund</strong>
+                    <div class="sp-goal-progress"><div class="sp-goal-bar" style="width:78%;background:#667EEA"></div></div>
+                    <small>$3,900 / $5,000</small>
+                  </div>
+                </div>
+                <div class="sp-goal-card">
+                  <div class="sp-goal-emoji">&#128187;</div>
+                  <div class="sp-goal-info">
+                    <strong>New MacBook</strong>
+                    <div class="sp-goal-progress"><div class="sp-goal-bar" style="width:45%;background:#F5576C"></div></div>
+                    <small>$1,125 / $2,500</small>
+                  </div>
+                </div>
+                <div class="sp-goal-card">
+                  <div class="sp-goal-emoji">&#127968;</div>
+                  <div class="sp-goal-info">
+                    <strong>Emergency Fund</strong>
+                    <div class="sp-goal-progress"><div class="sp-goal-bar" style="width:92%;background:#43E97B"></div></div>
+                    <small>$9,200 / $10,000</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="screenshot-label">Goals</div>
+        </div>
+      </div>
+      <div class="carousel-dots" id="carouselDots">
+        <button class="dot active" data-index="0"></button>
+        <button class="dot" data-index="1"></button>
+        <button class="dot" data-index="2"></button>
+        <button class="dot" data-index="3"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">How It Works</span>
+        <h2>Get Started in <span class="gradient-text">3 Simple Steps</span></h2>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <div class="step-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#667EEA" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </div>
+          <h3>Download & Sign Up</h3>
+          <p>Download Money Tracker from the App Store and create your free account in seconds.</p>
+        </div>
+        <div class="step-connector">
+          <svg width="40" height="2"><line x1="0" y1="1" x2="40" y2="1" stroke="#667EEA" stroke-width="2" stroke-dasharray="4 4"/></svg>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <div class="step-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#667EEA" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <h3>Track Your Spending</h3>
+          <p>Log expenses on the go, snap receipt photos, and let AI categorize everything for you.</p>
+        </div>
+        <div class="step-connector">
+          <svg width="40" height="2"><line x1="0" y1="1" x2="40" y2="1" stroke="#667EEA" stroke-width="2" stroke-dasharray="4 4"/></svg>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <div class="step-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#667EEA" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <h3>Achieve Your Goals</h3>
+          <p>Watch your savings grow with personalized insights and smart recommendations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews Section -->
+  <section class="reviews-section" id="reviews">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Reviews</span>
+        <h2>Loved by <span class="gradient-text">500K+ Users</span></h2>
+        <div class="review-summary">
+          <div class="review-stars">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFD700"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFD700"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFD700"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFD700"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFD700"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+          </div>
+          <span class="review-rating">4.8 out of 5</span>
+          <span class="review-count">Based on 12,400+ reviews</span>
+        </div>
+      </div>
+      <div class="reviews-grid">
+        <div class="review-card">
+          <div class="review-card-stars">&#11088;&#11088;&#11088;&#11088;&#11088;</div>
+          <h4>"Finally, an app that gets it right!"</h4>
+          <p>I've tried dozens of finance apps, and Money Tracker is by far the best. The interface is beautiful and intuitive. I actually enjoy tracking my spending now.</p>
+          <div class="review-author">
+            <div class="review-avatar" style="background:#667EEA;">S</div>
+            <div>
+              <div class="review-name">Sarah M.</div>
+              <div class="review-date">March 2026</div>
+            </div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-card-stars">&#11088;&#11088;&#11088;&#11088;&#11088;</div>
+          <h4>"Saved me $500 in just one month"</h4>
+          <p>The budget alerts are a game changer. I never realized how much I was spending on subscriptions until Money Tracker showed me. Highly recommended!</p>
+          <div class="review-author">
+            <div class="review-avatar" style="background:#F5576C;">J</div>
+            <div>
+              <div class="review-name">James K.</div>
+              <div class="review-date">February 2026</div>
+            </div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-card-stars">&#11088;&#11088;&#11088;&#11088;&#11088;</div>
+          <h4>"Perfect for digital nomads"</h4>
+          <p>Multi-currency support is flawless. As someone who travels between countries frequently, this app handles currency conversion seamlessly.</p>
+          <div class="review-author">
+            <div class="review-avatar" style="background:#43E97B;">L</div>
+            <div>
+              <div class="review-name">Lisa T.</div>
+              <div class="review-date">January 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / Download Section -->
+  <section class="cta-section" id="download">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Ready to Take Control of Your Finances?</h2>
+        <p>Join 500,000+ users who are already saving smarter with Money Tracker.</p>
+        <div class="cta-actions">
+          <a href="https://apps.apple.com/app/money-tracker-easy-smart/id6761291672" class="appstore-badge">
+            <svg width="24" height="28" viewBox="0 0 20 24" fill="white"><path d="M15.07 12.95c-.03-2.77 2.26-4.1 2.36-4.17-1.29-1.88-3.29-2.14-4-2.17-1.7-.17-3.33 1-4.19 1-.87 0-2.2-.98-3.62-.95-1.86.03-3.58 1.08-4.54 2.75-1.94 3.36-.5 8.33 1.39 11.05.92 1.33 2.02 2.83 3.47 2.78 1.39-.06 1.91-.9 3.59-.9 1.67 0 2.14.9 3.61.87 1.5-.03 2.45-1.36 3.36-2.69 1.06-1.54 1.5-3.04 1.52-3.12-.03-.01-2.92-1.12-2.95-4.45zM12.32 4.3c.77-.93 1.28-2.22 1.14-3.51-1.1.04-2.44.73-3.23 1.66-.71.82-1.33 2.13-1.16 3.39 1.23.1 2.48-.62 3.25-1.54z"/></svg>
+            <div>
+              <span class="badge-label">Download on the</span>
+              <span class="badge-title">App Store</span>
+            </div>
+          </a>
+        </div>
+        <div class="cta-trust">
+          <div class="cta-trust-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Secure & Private
+          </div>
+          <div class="cta-trust-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+            No ads, ever
+          </div>
+          <div class="cta-trust-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+            4.8&#11088; rated
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="images/app-icon.svg" alt="Money Tracker" class="footer-icon">
+          <h3>Money Tracker</h3>
+          <p>Smart personal finance management for everyone.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Product</h4>
+          <a href="#features">Features</a>
+          <a href="#screenshots">Screenshots</a>
+          <a href="#reviews">Reviews</a>
+        </div>
+        <div class="footer-links">
+          <h4>Support</h4>
+          <a href="#">Help Center</a>
+          <a href="#">Contact Us</a>
+          <a href="#">FAQ</a>
+          <a href="#">Community</a>
+        </div>
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Money Tracker. All rights reserved.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Twitter">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" aria-label="Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+          </a>
+          <a href="#" aria-label="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
