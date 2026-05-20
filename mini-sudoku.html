@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Sudoku — Daily 6×6 Number Puzzle</title>
+  <meta name="description" content="A fresh 6×6 Sudoku puzzle every morning. Four difficulty levels, daily streaks, hints, and a clean ad-free design. One-time unlock, no subscription." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset & base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:      #C8941A;
+      --gold-lt:   #E8AA30;
+      --gold-bg:   #FFF8EC;
+      --green:     #22C55E;
+      --green-bg:  #F0FFF5;
+      --dark:      #1A1A1A;
+      --mid:       #555;
+      --light:     #888;
+      --divider:   #E8E8E8;
+      --surface:   #F9F9F7;
+      --white:     #FFFFFF;
+      --radius:    20px;
+      --shadow:    0 8px 40px rgba(0,0,0,0.10);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--dark);
+      background: var(--white);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Utilities ────────────────────────────────────── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+    .tag {
+      display: inline-block;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(200,148,26,0.10);
+      padding: 5px 12px; border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    .tag.green { color: var(--green); background: rgba(34,197,94,0.10); }
+
+    /* ── Navbar ───────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--divider);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 17px; font-weight: 700; color: var(--dark);
+      text-decoration: none;
+    }
+    .nav-logo .icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, #B97D10, #E8AA30);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .btn-nav {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--dark); color: #fff;
+      font-size: 13px; font-weight: 600;
+      padding: 9px 18px; border-radius: 100px;
+      text-decoration: none;
+      transition: opacity .15s;
+    }
+    .btn-nav:hover { opacity: .8; }
+
+    /* ── Hero ─────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(160deg, #FFF8EC 0%, #FFFDF8 60%, #F4FFF8 100%);
+      padding: 80px 0 40px;
+      overflow: hidden;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .hero-eyebrow { margin-bottom: 12px; }
+    .hero h1 {
+      font-size: clamp(38px, 5vw, 58px);
+      font-weight: 900; line-height: 1.08;
+      letter-spacing: -1.5px;
+      color: var(--dark);
+      margin-bottom: 20px;
+    }
+    .hero h1 span { color: var(--gold); }
+    .hero p {
+      font-size: 17px; line-height: 1.65;
+      color: var(--mid);
+      max-width: 420px;
+      margin-bottom: 36px;
+    }
+    .hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--dark); color: #fff;
+      font-size: 15px; font-weight: 700;
+      padding: 14px 28px; border-radius: 100px;
+      text-decoration: none;
+      transition: transform .15s, box-shadow .15s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.22); }
+    .btn-primary svg { width: 20px; height: 20px; }
+    .hero-note { font-size: 13px; color: var(--light); }
+    .hero-note strong { color: var(--dark); }
+
+    /* Phone mockup */
+    .hero-screens {
+      display: flex; justify-content: center; align-items: flex-end;
+      gap: -20px;
+      position: relative;
+    }
+    .phone-wrap {
+      position: relative;
+      filter: drop-shadow(0 24px 60px rgba(0,0,0,0.18));
+      transition: transform .3s;
+    }
+    .phone-wrap:hover { transform: translateY(-6px); }
+    .phone-wrap.back {
+      transform: rotate(-6deg) translateX(30px) translateY(20px);
+      z-index: 1; opacity: .85;
+    }
+    .phone-wrap.front { z-index: 2; }
+    .phone-wrap.back:hover { transform: rotate(-6deg) translateX(30px) translateY(14px); }
+    .phone-frame {
+      width: 220px;
+      border-radius: 38px;
+      overflow: hidden;
+      border: 2px solid rgba(0,0,0,0.06);
+    }
+    .phone-frame img { width: 100%; display: block; }
+
+    /* ── Marquee strip ────────────────────────────────── */
+    .strip {
+      background: var(--dark);
+      padding: 14px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .strip-inner {
+      display: inline-flex; gap: 48px;
+      animation: marquee 20s linear infinite;
+    }
+    .strip-inner span {
+      font-size: 13px; font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: .4px;
+    }
+    .strip-inner span em { color: #fff; font-style: normal; }
+    @keyframes marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ── Features ─────────────────────────────────────── */
+    .features { padding: 96px 0; }
+    .section-header { text-align: center; margin-bottom: 56px; }
+    .section-header h2 {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800; letter-spacing: -1px; line-height: 1.15;
+    }
+    .section-header p { font-size: 17px; color: var(--mid); margin-top: 12px; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .feat-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 28px;
+      border: 1px solid var(--divider);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .feat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .feat-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 16px;
+    }
+    .feat-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .feat-card p  { font-size: 14px; line-height: 1.6; color: var(--mid); }
+
+    /* ── Screenshots ──────────────────────────────────── */
+    .screens-section { padding: 0 0 96px; }
+    .screens-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 56px;
+    }
+    .screen-card {
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid var(--divider);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      transition: transform .25s, box-shadow .25s;
+    }
+    .screen-card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 20px 48px rgba(0,0,0,0.14); }
+    .screen-card img { width: 100%; display: block; }
+
+    /* ── Daily section ────────────────────────────────── */
+    .daily { padding: 96px 0; background: var(--gold-bg); }
+    .daily-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center;
+    }
+    .daily h2 {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800; letter-spacing: -1px; line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .daily p { font-size: 17px; line-height: 1.65; color: var(--mid); }
+    .streak-row {
+      display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap;
+    }
+    .streak-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: white; border: 1px solid var(--divider);
+      border-radius: 100px; padding: 10px 18px;
+      font-size: 14px; font-weight: 600;
+    }
+    .streak-chip .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* Heatmap */
+    .heatmap { display: flex; flex-direction: column; gap: 6px; }
+    .hm-row  { display: flex; gap: 6px; justify-content: flex-end; }
+    .hm-cell {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: #E8E0D0;
+    }
+    .hm-cell.done-hard   { background: #C0392B; }
+    .hm-cell.done-medium { background: #E8AA30; }
+    .hm-cell.done-easy   { background: #22C55E; }
+    .hm-cell.done-expert { background: #7C3AED; }
+    .hm-cell.future      { background: #F0EDE8; }
+
+    /* ── Difficulties ─────────────────────────────────── */
+    .diff-section { padding: 96px 0; }
+    .diff-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 16px; margin-top: 56px;
+    }
+    .diff-card {
+      border-radius: var(--radius); padding: 28px 24px;
+      border: 1px solid var(--divider);
+      transition: transform .2s;
+    }
+    .diff-card:hover { transform: translateY(-4px); }
+    .diff-card .level { font-size: 12px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; opacity: .55; margin-bottom: 8px; }
+    .diff-card h3     { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+    .diff-card p      { font-size: 14px; color: var(--mid); line-height: 1.5; }
+    .diff-card .time  { font-size: 12px; font-weight: 600; margin-top: 14px; opacity: .5; }
+    .diff-easy   { background: #F0FFF5; border-color: #86EFAC; }
+    .diff-medium { background: #FFFBEB; border-color: #FCD34D; }
+    .diff-hard   { background: #FFF1F0; border-color: #FCA5A5; }
+    .diff-expert { background: #FAF5FF; border-color: #C4B5FD; }
+
+    /* ── Pricing ──────────────────────────────────────── */
+    .pricing { padding: 96px 0; background: var(--dark); }
+    .pricing .section-header h2 { color: white; }
+    .pricing .section-header p  { color: rgba(255,255,255,0.55); }
+    .pricing-card {
+      max-width: 480px; margin: 0 auto;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 28px; padding: 40px;
+      text-align: center;
+    }
+    .pricing-card .price {
+      font-size: 56px; font-weight: 900; color: white;
+      letter-spacing: -2px; margin: 12px 0 4px;
+    }
+    .pricing-card .price-sub { font-size: 14px; color: rgba(255,255,255,0.45); margin-bottom: 28px; }
+    .pricing-perks { list-style: none; text-align: left; margin-bottom: 32px; display: flex; flex-direction: column; gap: 12px; }
+    .pricing-perks li {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 15px; color: rgba(255,255,255,0.75);
+    }
+    .pricing-perks li::before {
+      content: "✓";
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(34,197,94,0.2); color: var(--green);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; flex-shrink: 0;
+    }
+    .btn-gold {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      background: linear-gradient(135deg, #B97D10, #E8AA30);
+      color: white; font-size: 16px; font-weight: 700;
+      padding: 16px 40px; border-radius: 100px;
+      text-decoration: none; width: 100%;
+      box-shadow: 0 4px 24px rgba(200,148,26,0.4);
+      transition: opacity .15s, transform .15s;
+    }
+    .btn-gold:hover { opacity: .9; transform: translateY(-2px); }
+    .pricing-note { font-size: 13px; color: rgba(255,255,255,0.3); margin-top: 16px; }
+
+    /* ── Footer ───────────────────────────────────────── */
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--divider);
+      text-align: center;
+    }
+    footer .foot-logo {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 16px; font-weight: 700; text-decoration: none; color: var(--dark);
+      margin-bottom: 16px;
+    }
+    footer .foot-logo .icon {
+      width: 28px; height: 28px; border-radius: 7px;
+      background: linear-gradient(135deg, #B97D10, #E8AA30);
+      display: flex; align-items: center; justify-content: center; font-size: 14px;
+    }
+    footer p { font-size: 13px; color: var(--light); }
+    footer a { color: var(--light); text-decoration: none; }
+    footer a:hover { color: var(--dark); }
+
+    /* ── Responsive ───────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-inner     { grid-template-columns: 1fr; text-align: center; }
+      .hero p         { max-width: 100%; }
+      .hero-actions   { justify-content: center; }
+      .hero-screens   { margin-top: 24px; }
+      .features-grid  { grid-template-columns: 1fr 1fr; }
+      .screens-grid   { grid-template-columns: repeat(2, 1fr); }
+      .daily-inner    { grid-template-columns: 1fr; }
+      .diff-grid      { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .features-grid  { grid-template-columns: 1fr; }
+      .screens-grid   { grid-template-columns: repeat(2, 1fr); }
+      .diff-grid      { grid-template-columns: 1fr 1fr; }
+      .phone-wrap.back { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navbar ──────────────────────────────────────── -->
+<nav>
+  <div class="container nav-inner">
+    <a class="nav-logo" href="#">
+      <div class="icon">♟</div>
+      Mini Sudoku
+    </a>
+    <a class="btn-nav" href="https://apps.apple.com/app/id6770221466" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+      </svg>
+      Download
+    </a>
+  </div>
+</nav>
+
+<!-- ── Hero ────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container hero-inner">
+    <div>
+      <div class="tag">Free to try · No subscription</div>
+      <h1>The <span>6×6</span> puzzle<br>built for daily play.</h1>
+      <p>Smaller grid, same satisfying logic. Solve a fresh puzzle every morning — track your streak, beat your time, and grow sharper every day.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="https://apps.apple.com/app/id6770221466" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+          </svg>
+          Download on the App Store
+        </a>
+        <span class="hero-note"><strong>7 days free</strong> · then $2.99 once, forever</span>
+      </div>
+    </div>
+
+    <div class="hero-screens">
+      <div class="phone-wrap back">
+        <div class="phone-frame">
+          <img src="mini-sudoku-screenshots/screen-game.jpg" alt="Game screen" />
+        </div>
+      </div>
+      <div class="phone-wrap front">
+        <div class="phone-frame">
+          <img src="mini-sudoku-screenshots/screen-home.jpg" alt="Home screen" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Marquee ──────────────────────────────────────── -->
+<div class="strip">
+  <div class="strip-inner">
+    <span>🧩 <em>6×6 Grid</em></span>
+    <span>🔥 <em>Daily Streaks</em></span>
+    <span>💡 <em>Smart Hints</em></span>
+    <span>🚫 <em>No Ads</em></span>
+    <span>🌙 <em>Dark Mode</em></span>
+    <span>📝 <em>Notes Mode</em></span>
+    <span>⏱ <em>Personal Best Timer</em></span>
+    <span>👑 <em>One-Time Unlock</em></span>
+    <!-- duplicate for seamless loop -->
+    <span>🧩 <em>6×6 Grid</em></span>
+    <span>🔥 <em>Daily Streaks</em></span>
+    <span>💡 <em>Smart Hints</em></span>
+    <span>🚫 <em>No Ads</em></span>
+    <span>🌙 <em>Dark Mode</em></span>
+    <span>📝 <em>Notes Mode</em></span>
+    <span>⏱ <em>Personal Best Timer</em></span>
+    <span>👑 <em>One-Time Unlock</em></span>
+  </div>
+</div>
+
+<!-- ── Features ─────────────────────────────────────── -->
+<section class="features">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">Why Mini Sudoku</div>
+      <h2>Everything you need.<br>Nothing you don't.</h2>
+      <p>Thoughtfully designed for focus — not engagement metrics.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#FFF8EC">📅</div>
+        <h3>Daily Puzzle</h3>
+        <p>A handcrafted puzzle unlocks every morning. Build a streak, make it a ritual.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#F0FFF5">⚡️</div>
+        <h3>Quick to Solve</h3>
+        <p>The 6×6 format takes 2–15 minutes — perfect for a coffee break or commute.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#FAF5FF">🏆</div>
+        <h3>Four Difficulty Levels</h3>
+        <p>Easy through Expert. Grow at your own pace or go straight to the deep end.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#EFF6FF">📝</div>
+        <h3>Notes Mode</h3>
+        <p>Pencil in candidate numbers. Erase when you're certain. Classic Sudoku technique.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#FFF0F0">💡</div>
+        <h3>Hints</h3>
+        <p>Stuck? Use a hint to reveal one correct cell and get back on track.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#F0FFF5">🚫</div>
+        <h3>Zero Ads</h3>
+        <p>No banners, no interstitials, no rewards. Pure puzzle — pay once and own it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Screenshots ───────────────────────────────────── -->
+<section class="screens-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">In-App Screenshots</div>
+      <h2>Clean. Fast. Focused.</h2>
+      <p>Light and dark mode — looks great on any iPhone.</p>
+    </div>
+    <div class="screens-grid">
+      <div class="screen-card"><img src="mini-sudoku-screenshots/screen-home.jpg" alt="Home screen" /></div>
+      <div class="screen-card"><img src="mini-sudoku-screenshots/screen-game.jpg" alt="Game — light mode" /></div>
+      <div class="screen-card"><img src="mini-sudoku-screenshots/screen-dark.jpg" alt="Game — dark mode" /></div>
+      <div class="screen-card"><img src="mini-sudoku-screenshots/screen-win.jpg" alt="Win screen" /></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Daily / Streak ────────────────────────────────── -->
+<section class="daily">
+  <div class="container daily-inner">
+    <div>
+      <div class="tag">Daily Habit</div>
+      <h2>A fresh grid,<br>every morning.</h2>
+      <p>Keep your streak alive with one puzzle a day. Track the last 4 weeks at a glance on the heatmap — each colour shows the difficulty you solved.</p>
+      <div class="streak-row">
+        <div class="streak-chip"><span class="dot" style="background:#22C55E"></span> Easy</div>
+        <div class="streak-chip"><span class="dot" style="background:#E8AA30"></span> Medium</div>
+        <div class="streak-chip"><span class="dot" style="background:#EF4444"></span> Hard</div>
+        <div class="streak-chip"><span class="dot" style="background:#7C3AED"></span> Expert</div>
+      </div>
+    </div>
+    <div>
+      <!-- Mini heatmap illustration -->
+      <div class="heatmap">
+        <div class="hm-row">
+          <div class="hm-cell done-medium"></div><div class="hm-cell done-easy"></div>
+          <div class="hm-cell"></div><div class="hm-cell done-hard"></div>
+          <div class="hm-cell done-medium"></div><div class="hm-cell"></div><div class="hm-cell done-easy"></div>
+        </div>
+        <div class="hm-row">
+          <div class="hm-cell done-hard"></div><div class="hm-cell"></div>
+          <div class="hm-cell done-medium"></div><div class="hm-cell done-easy"></div>
+          <div class="hm-cell"></div><div class="hm-cell done-expert"></div><div class="hm-cell done-medium"></div>
+        </div>
+        <div class="hm-row">
+          <div class="hm-cell done-easy"></div><div class="hm-cell done-medium"></div>
+          <div class="hm-cell done-hard"></div><div class="hm-cell"></div>
+          <div class="hm-cell done-medium"></div><div class="hm-cell done-easy"></div><div class="hm-cell"></div>
+        </div>
+        <div class="hm-row">
+          <div class="hm-cell done-medium"></div><div class="hm-cell done-easy"></div>
+          <div class="hm-cell done-expert"></div><div class="hm-cell future"></div>
+          <div class="hm-cell future"></div><div class="hm-cell future"></div><div class="hm-cell future"></div>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:8px;padding:0 2px;">
+          <span style="flex:1;text-align:center;font-size:11px;color:#999;font-weight:600">M</span>
+          <span style="flex:1;text-align:center;font-size:11px;color:#999;font-weight:600">T</span>
+          <span style="flex:1;text-align:center;font-size:11px;color:#999;font-weight:600">W</span>
+          <span style="flex:1;text-align:center;font-size:11px;color:#999;font-weight:600">T</span>
+          <span style="flex:1;text-align:center;font-size:11px;color:#999;font-weight:600">F</span>
+          <span style="flex:1;text-align:center;font-size:11px;color:#999;font-weight:600">S</span>
+          <span style="flex:1;text-align:center;font-size:11px;color:#999;font-weight:600">S</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Difficulties ──────────────────────────────────── -->
+<section class="diff-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">Difficulty</div>
+      <h2>Play at your level.</h2>
+      <p>Four carefully tuned difficulties — from first-timer to seasoned solver.</p>
+    </div>
+    <div class="diff-grid">
+      <div class="diff-card diff-easy">
+        <div class="level">Easy</div>
+        <h3>🌱 Beginner</h3>
+        <p>More given cells, relaxed logic. Perfect for learning the rules.</p>
+        <div class="time">⏱ 2–4 min avg</div>
+      </div>
+      <div class="diff-card diff-medium">
+        <div class="level">Medium</div>
+        <h3>⚡ Challenge</h3>
+        <p>Requires a little more thought. A satisfying daily workout.</p>
+        <div class="time">⏱ 5–8 min avg</div>
+      </div>
+      <div class="diff-card diff-hard">
+        <div class="level">Hard</div>
+        <h3>🔥 Advanced</h3>
+        <p>Fewer clues, deeper chains. Think two steps ahead.</p>
+        <div class="time">⏱ 8–14 min avg</div>
+      </div>
+      <div class="diff-card diff-expert">
+        <div class="level">Expert</div>
+        <h3>👑 Master</h3>
+        <p>Minimal given cells. Maximum satisfaction when you crack it.</p>
+        <div class="time">⏱ 15+ min avg</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Pricing ───────────────────────────────────────── -->
+<section class="pricing">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag green">Lifetime Access</div>
+      <h2>Pay once.<br>Play forever.</h2>
+      <p>No subscription. No hidden fees. One small payment unlocks everything.</p>
+    </div>
+    <div class="pricing-card">
+      <div class="tag green" style="margin-bottom:8px">Full Version</div>
+      <div class="price">$2.99</div>
+      <div class="price-sub">One-time purchase · No recurring charges</div>
+      <ul class="pricing-perks">
+        <li>All four difficulty levels</li>
+        <li>Unlimited daily puzzles &amp; streaks</li>
+        <li>Hints — use as many as you need</li>
+        <li>Full statistics &amp; heatmap history</li>
+        <li>Ad-free, always</li>
+        <li>7-day free trial — no credit card needed</li>
+      </ul>
+      <a class="btn-gold" href="https://apps.apple.com/app/id6770221466" target="_blank">
+        Download Free on App Store
+      </a>
+      <div class="pricing-note">Available on iPhone · iOS 17+</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <a class="foot-logo" href="#">
+      <div class="icon">♟</div>
+      Mini Sudoku
+    </a>
+    <p>Made with care by <strong>Hanmin Studio</strong> &nbsp;·&nbsp;
+      <a href="mailto:hungdt8@gmail.com">Contact</a> &nbsp;·&nbsp;
+      <a href="#">Privacy Policy</a>
+    </p>
+    <p style="margin-top:8px">© 2026 Hanmin Studio. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
