@@ -87,12 +87,12 @@ section{padding:100px 24px}
 
 /* ─── SCREENSHOTS ────────────────────────────────────────────────── */
 .screenshots{background:var(--bg2);padding:100px 24px}
-.phones-row{display:flex;gap:28px;align-items:flex-end;justify-content:center;margin-top:60px;flex-wrap:wrap}
+.phones-row{display:flex;gap:28px;align-items:center;justify-content:center;margin-top:60px;flex-wrap:wrap}
 .phone-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
 .phone-label{font-size:13px;font-weight:700;color:var(--muted)}
-.phone{width:240px;background:linear-gradient(168deg,#34383F 0%,#24282F 50%,#1A1D23 100%);border-radius:54px;overflow:hidden;position:relative;flex-shrink:0;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.17),inset 0 1px 0 rgba(255,255,255,.08),0 0 0 1.5px rgba(0,0,0,.6),0 2px 6px rgba(0,0,0,.3),0 18px 52px rgba(20,15,8,.44),0 40px 88px rgba(20,15,8,.24),0 -1px 14px rgba(180,190,215,.07)}
+.phone{width:240px;height:520px;background:linear-gradient(168deg,#34383F 0%,#24282F 50%,#1A1D23 100%);border-radius:54px;overflow:hidden;position:relative;flex-shrink:0;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.17),inset 0 1px 0 rgba(255,255,255,.08),0 0 0 1.5px rgba(0,0,0,.6),0 2px 6px rgba(0,0,0,.3),0 18px 52px rgba(20,15,8,.44),0 40px 88px rgba(20,15,8,.24),0 -1px 14px rgba(180,190,215,.07)}
 .phone-notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:96px;height:30px;background:#0C0E13;border-radius:20px;z-index:5;box-shadow:0 1px 0 rgba(255,255,255,.05),inset 0 1px 2px rgba(0,0,0,.5)}
-.phone-screen{background:#EFEADD;padding:56px 14px 18px;min-height:440px;display:flex;flex-direction:column}
+.phone-screen{background:#EFEADD;padding:56px 14px 18px;height:100%;display:flex;flex-direction:column;overflow:hidden}
 
 /* ─── PHONE SCREEN 1: HOME ──────────── */
 .ps-home{align-items:center;text-align:center;gap:12px}
@@ -184,7 +184,7 @@ footer a{color:rgba(255,255,255,.5)}
   .daily-inner{flex-direction:column}
   .milo-inner{flex-direction:column;align-items:center;text-align:center}
   .phones-row{gap:14px}
-  .phone{width:190px;border-radius:44px}
+  .phone{width:190px;height:410px;border-radius:44px}
   .footer-inner{flex-direction:column;text-align:center}
 }
 @media(max-width:560px){
