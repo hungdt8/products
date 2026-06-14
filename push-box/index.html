@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Push Box — A quiet little puzzle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & BASE ─────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#EFEADD;color:#23272F;font-family:'Nunito',system-ui,sans-serif;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+:root{
+  --bg:#EFEADD; --bg2:#E5DFCF; --card:#fff;
+  --ink:#23272F; --muted:#7B818B; --faint:#B0B4BA;
+  --accent:#5C70A8; --accent-d:#3D5298; --accent-s:#DCE2F5; --accent-si:#4B5E96;
+  --terra:#C9813D; --terra-d:#9C5E26; --terra-s:#F5E6D2;
+  --good:#3FA46F; --good-s:rgba(63,164,111,.14);
+  --hero-top:#3A4A85; --hero-bot:#18204E;
+  --font-d:'Baloo 2',system-ui; --font-u:'Nunito',system-ui; --font-m:'JetBrains Mono',monospace;
+  --sh:0 4px 16px rgba(50,42,20,.09); --sh-lg:0 24px 60px rgba(50,42,20,.18);
+}
+
+/* ─── NAV ────────────────────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;transition:background .25s,box-shadow .25s}
+nav.scrolled{background:rgba(239,234,221,.88);backdrop-filter:blur(14px);box-shadow:0 1px 0 rgba(50,42,20,.1)}
+.nav-brand{display:flex;align-items:center;gap:11px}
+.nav-logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(160deg,#cf8a45,#bd7430);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(150,90,30,.4),inset 0 -4px 0 #9c5d22}
+.nav-logo svg{color:#fff}
+.nav-name{font-family:var(--font-d);font-weight:800;font-size:22px;letter-spacing:-.3px}
+.nav-links{display:flex;align-items:center;gap:8px}
+.nav-link{font-weight:700;font-size:15px;color:var(--muted);padding:8px 16px;border-radius:12px;transition:color .15s,background .15s}
+.nav-link:hover{color:var(--ink);background:var(--bg2)}
+.nav-cta{background:var(--accent);color:#fff;padding:10px 22px;border-radius:12px;font-weight:800;font-size:15px;box-shadow:0 4px 12px -4px var(--accent);transition:transform .12s,filter .15s}
+.nav-cta:hover{transform:translateY(-1px);filter:brightness(1.06)}
+
+/* ─── HERO ───────────────────────────────────────────────────────── */
+.hero{background:linear-gradient(160deg,var(--hero-top),var(--hero-bot));min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 24px 80px;position:relative;overflow:hidden;text-align:center}
+.hero-bg-glow{position:absolute;inset:0;background:radial-gradient(60% 55% at 50% 25%,rgba(120,150,220,.18),transparent);pointer-events:none}
+.hero-dots{position:absolute;inset:0;pointer-events:none;opacity:.06}
+.hero-icon{width:148px;height:148px;border-radius:33px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.08);margin:0 auto 28px;flex-shrink:0;animation:heroFloat 4s ease-in-out infinite}
+@keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero h1{font-family:var(--font-d);font-weight:800;font-size:clamp(56px,9vw,108px);color:#fff;line-height:1;letter-spacing:-2px;margin-bottom:16px}
+.hero-sub{color:rgba(255,255,255,.65);font-size:clamp(17px,2.4vw,22px);font-weight:600;max-width:480px;line-height:1.45;margin:0 auto 36px}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:60px}
+.store-btn{display:flex;align-items:center;gap:11px;background:#fff;color:#23272F;border-radius:16px;padding:14px 28px;font-weight:800;font-size:16px;box-shadow:0 8px 28px rgba(0,0,0,.3);transition:transform .12s,box-shadow .15s}
+.store-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(0,0,0,.38)}
+.store-btn svg{flex-shrink:0}
+.store-btn-ghost{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.18)}
+.store-btn-ghost:hover{background:rgba(255,255,255,.16)}
+.hero-pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.hero-pill{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border-radius:999px;padding:8px 18px;font-size:14px;font-weight:700}
+
+/* ─── MARQUEE STRIP ─────────────────────────────────────────────── */
+.marquee-wrap{background:var(--terra);overflow:hidden;padding:14px 0;position:relative}
+.marquee-track{display:flex;gap:48px;width:max-content;animation:marquee 22s linear infinite;white-space:nowrap}
+.marquee-track span{font-family:var(--font-d);font-weight:700;font-size:17px;color:#fff;opacity:.9;display:flex;align-items:center;gap:14px}
+.marquee-track span::before{content:"◆";font-size:9px;opacity:.6}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ─── SHARED SECTION ─────────────────────────────────────────────── */
+section{padding:100px 24px}
+.section-inner{max-width:1080px;margin:0 auto}
+.section-label{font-size:13px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--terra);margin-bottom:12px}
+.section-title{font-family:var(--font-d);font-weight:800;font-size:clamp(36px,5vw,58px);line-height:1.05;letter-spacing:-1px;margin-bottom:16px}
+.section-body{color:var(--muted);font-size:18px;font-weight:600;line-height:1.5;max-width:520px}
+
+/* fade-in on scroll */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+
+/* ─── FEATURES ───────────────────────────────────────────────────── */
+.features{background:var(--bg)}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px}
+.feat-card{background:var(--card);border-radius:28px;padding:34px 28px;box-shadow:var(--sh);transition:transform .18s,box-shadow .18s}
+.feat-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
+.feat-icon{width:56px;height:56px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.feat-title{font-family:var(--font-d);font-weight:700;font-size:24px;margin-bottom:10px}
+.feat-body{color:var(--muted);font-size:16px;line-height:1.5;font-weight:600}
+.ic-accent{background:var(--accent-s);color:var(--accent)}
+.ic-terra{background:var(--terra-s);color:var(--terra)}
+.ic-good{background:var(--good-s);color:var(--good)}
+
+/* ─── SCREENSHOTS ────────────────────────────────────────────────── */
+.screenshots{background:var(--bg2);padding:100px 24px}
+.phones-row{display:flex;gap:28px;align-items:flex-end;justify-content:center;margin-top:60px;flex-wrap:wrap}
+.phone-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+.phone-label{font-size:13px;font-weight:700;color:var(--muted)}
+.phone{width:240px;background:linear-gradient(168deg,#34383F 0%,#24282F 50%,#1A1D23 100%);border-radius:54px;overflow:hidden;position:relative;flex-shrink:0;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.17),inset 0 1px 0 rgba(255,255,255,.08),0 0 0 1.5px rgba(0,0,0,.6),0 2px 6px rgba(0,0,0,.3),0 18px 52px rgba(20,15,8,.44),0 40px 88px rgba(20,15,8,.24),0 -1px 14px rgba(180,190,215,.07)}
+.phone-notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:96px;height:30px;background:#0C0E13;border-radius:20px;z-index:5;box-shadow:0 1px 0 rgba(255,255,255,.05),inset 0 1px 2px rgba(0,0,0,.5)}
+.phone-screen{background:#EFEADD;padding:56px 14px 18px;min-height:440px;display:flex;flex-direction:column}
+
+/* ─── PHONE SCREEN 1: HOME ──────────── */
+.ps-home{align-items:center;text-align:center;gap:12px}
+.ps-logomark{width:68px;height:68px;border-radius:20px;background:linear-gradient(160deg,#cf8a45,#bd7430);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(150,90,30,.45),inset 0 -5px 0 #9c5d22;margin:10px auto 0}
+.ps-title{font-family:var(--font-d);font-weight:800;font-size:26px;line-height:1}
+.ps-sub{color:var(--muted);font-size:11px;font-weight:600}
+.ps-pill{background:var(--accent-s);color:var(--accent-si);border-radius:999px;padding:5px 12px;font-size:11px;font-weight:800}
+.ps-btn{background:linear-gradient(160deg,#6A7DB6,#54689F);color:#fff;border-radius:12px;padding:12px;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:auto;box-shadow:0 4px 12px -4px var(--accent),inset 0 1px 0 rgba(255,255,255,.2)}
+.ps-card-row{display:flex;gap:8px;width:100%}
+.ps-card{flex:1;background:var(--card);border-radius:14px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;font-weight:800;box-shadow:0 2px 8px rgba(50,42,20,.07)}
+
+/* ─── PHONE SCREEN 2: GAME ──────────── */
+.ps-game{padding:52px 10px 14px;gap:10px}
+.ps-game-top{display:flex;align-items:center;justify-content:space-between;padding:0 4px;margin-bottom:2px}
+.ps-game-title{font-family:var(--font-d);font-weight:700;font-size:16px}
+.ps-chips{display:flex;gap:6px}
+.ps-chip{flex:1;background:var(--card);border-radius:10px;padding:6px 4px;text-align:center;box-shadow:0 2px 6px rgba(50,42,20,.07)}
+.ps-chip-v{font-family:var(--font-m);font-size:13px;font-weight:700;line-height:1}
+.ps-chip-l{font-size:9px;font-weight:800;color:var(--muted);letter-spacing:.3px;margin-top:1px}
+.board-mini{background:linear-gradient(165deg,#DED7C6,#D2CABA);border-radius:18px;padding:8px;flex:1;display:flex;align-items:center;justify-content:center}
+.board-grid{display:grid;gap:2px}
+.cell{border-radius:4px;width:100%;padding-top:100%}
+.cw{background:#5C616B;box-shadow:inset 0 -2px 0 #474C55}
+.cf{background:#F4F0E6;box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}
+.cg{background:#F4F0E6;position:relative;overflow:visible}
+.cb{background:linear-gradient(135deg,#D89150,#BC7430);box-shadow:inset 0 -2px 0 #9c5e20;border-radius:5px}
+.cp{background:linear-gradient(160deg,#6A7DB6,#54689F);border-radius:50%;box-shadow:0 2px 6px rgba(40,55,110,.4)}
+.cog{background:linear-gradient(135deg,#82cc78,#438540);box-shadow:inset 0 -2px 0 #2e6030;border-radius:5px}
+
+/* ─── PHONE SCREEN 3: WIN ──────────────── */
+.ps-win{align-items:center;text-align:center;padding:52px 14px 18px}
+.ps-win-badge{width:72px;height:72px;border-radius:22px;background:linear-gradient(160deg,#5BB078,#43946060);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 22px -4px var(--good),inset 0 2px 0 rgba(255,255,255,.3);margin:12px auto 14px}
+.ps-win-title{font-family:var(--font-d);font-weight:800;font-size:28px}
+.ps-win-sub{color:var(--muted);font-size:12px;font-weight:600;margin-top:2px;margin-bottom:16px}
+.ps-win-stats{display:flex;gap:8px;width:100%;margin-bottom:16px}
+.ps-win-stat{flex:1;background:var(--card);border-radius:12px;padding:10px 4px;box-shadow:0 2px 8px rgba(50,42,20,.07)}
+.ps-win-v{font-family:var(--font-m);font-size:17px;font-weight:700}
+.ps-win-l{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.3px;margin-top:2px}
+.ps-win-btn{background:linear-gradient(160deg,#6A7DB6,#54689F);color:#fff;border-radius:12px;padding:12px;font-weight:800;font-size:13px;width:100%;text-align:center;box-shadow:0 4px 12px -4px var(--accent)}
+
+/* ─── HOW TO PLAY ────────────────────────────────────────────────── */
+.howto{background:var(--card)}
+.steps-row{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px}
+.step{display:flex;flex-direction:column;gap:14px;padding:32px;background:var(--bg);border-radius:28px}
+.step-num{width:44px;height:44px;border-radius:14px;background:var(--accent);color:#fff;font-family:var(--font-d);font-weight:800;font-size:22px;display:flex;align-items:center;justify-content:center}
+.step-title{font-family:var(--font-d);font-weight:700;font-size:22px}
+.step-body{color:var(--muted);font-size:16px;font-weight:600;line-height:1.45}
+
+/* ─── DAILY CHALLENGE ────────────────────────────────────────────── */
+.daily{background:linear-gradient(155deg,var(--hero-top),var(--hero-bot));color:#fff}
+.daily .section-label{color:rgba(255,255,255,.55)}
+.daily .section-title{color:#fff}
+.daily .section-body{color:rgba(255,255,255,.65)}
+.daily-inner{display:flex;align-items:center;gap:60px;flex-wrap:wrap}
+.daily-text{flex:1;min-width:260px}
+.daily-card-preview{flex-shrink:0;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.12);border-radius:28px;padding:28px;width:280px;display:flex;flex-direction:column;gap:14px}
+.daily-card-date{color:rgba(255,255,255,.5);font-weight:700;font-size:15px}
+.daily-streak-row{display:flex;gap:8px}
+.daily-streak-day{width:34px;height:34px;border-radius:11px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-weight:800;color:rgba(255,255,255,.4);font-size:13px}
+.daily-streak-day.on{background:linear-gradient(135deg,#D89150,#BC7430);color:#fff}
+.daily-streak-label{color:rgba(255,255,255,.45);font-weight:700;font-size:14px}
+.daily-play-btn{background:#fff;color:var(--accent-d);border-radius:14px;padding:14px 22px;font-weight:800;font-size:16px;display:flex;align-items:center;gap:10px;margin-top:8px;width:fit-content}
+
+/* ─── MILO SECTION ───────────────────────────────────────────────── */
+.milo-section{background:var(--bg);padding:100px 24px}
+.milo-inner{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:64px;flex-wrap:wrap}
+.milo-text{flex:1;min-width:260px}
+.milo-art{flex-shrink:0;width:280px;height:280px;position:relative}
+
+/* ─── DOWNLOAD CTA ───────────────────────────────────────────────── */
+.cta-section{background:var(--bg2);text-align:center}
+.cta-icon{width:120px;height:120px;border-radius:28px;overflow:hidden;margin:0 auto 28px;box-shadow:var(--sh-lg)}
+.cta-section .section-title{margin-bottom:10px}
+.cta-section .section-body{margin:0 auto 36px}
+.cta-badges{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ─── FOOTER ─────────────────────────────────────────────────────── */
+footer{background:#23272F;color:rgba(255,255,255,.4);padding:40px 24px;text-align:center;font-size:14px;font-weight:600}
+footer a{color:rgba(255,255,255,.5)}
+.footer-inner{max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.footer-brand{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.7);font-weight:800;font-size:16px}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────── */
+@media(max-width:860px){
+  nav{padding:14px 20px}
+  .nav-links .nav-link{display:none}
+  .feat-grid{grid-template-columns:1fr 1fr}
+  .steps-row{grid-template-columns:1fr}
+  .daily-inner{flex-direction:column}
+  .milo-inner{flex-direction:column;align-items:center;text-align:center}
+  .phones-row{gap:14px}
+  .phone{width:190px;border-radius:44px}
+  .footer-inner{flex-direction:column;text-align:center}
+}
+@media(max-width:560px){
+  section{padding:72px 20px}
+  .feat-grid{grid-template-columns:1fr}
+  .phones-row .phone-wrap:nth-child(3){display:none}
+  nav{padding:12px 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ──────────────── NAV ──────────────── -->
+<nav id="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 12h15M13 6l6 6-6 6"/>
+      </svg>
+    </div>
+    <span class="nav-name">Push Box</span>
+  </div>
+  <div class="nav-links">
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#howtoplay" class="nav-link">How to Play</a>
+    <a href="#download" class="nav-cta">Download</a>
+  </div>
+</nav>
+
+<!-- ──────────────── HERO ──────────────── -->
+<section class="hero">
+  <div class="hero-bg-glow"></div>
+  <!-- App Icon -->
+  <div class="hero-icon">
+    <svg width="148" height="148" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="hiclip"><rect width="1024" height="1024"/></clipPath>
+        <clipPath id="hilbClip"><rect x="274" y="388" width="272" height="272" rx="46"/></clipPath>
+        <radialGradient id="hibgG" cx="42%" cy="35%" r="68%">
+          <stop offset="0%" stop-color="#6070AA"/><stop offset="50%" stop-color="#3E4D8A"/><stop offset="100%" stop-color="#181F5C"/>
+        </radialGradient>
+        <linearGradient id="hiboxFG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#F0B060"/><stop offset="42%" stop-color="#CC8030"/><stop offset="100%" stop-color="#7A3E10"/>
+        </linearGradient>
+        <radialGradient id="hiboxGlintG" cx="18%" cy="18%" r="52%">
+          <stop offset="0%" stop-color="rgba(255,255,255,.44)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+        </radialGradient>
+        <radialGradient id="himiloBodyG" cx="30%" cy="26%" r="65%">
+          <stop offset="0%" stop-color="#5568A8"/><stop offset="55%" stop-color="#3A4A84"/><stop offset="100%" stop-color="#1C2460"/>
+        </radialGradient>
+        <linearGradient id="hiclampFG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#3C4878"/><stop offset="100%" stop-color="#1E2450"/>
+        </linearGradient>
+        <radialGradient id="hivigG" cx="50%" cy="50%" r="70%">
+          <stop offset="0%" stop-color="rgba(0,0,0,0)"/><stop offset="100%" stop-color="rgba(0,0,0,.42)"/>
+        </radialGradient>
+        <filter id="hishF"><feGaussianBlur stdDeviation="18"/></filter>
+        <filter id="hiledF"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="hiantF"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="higlF"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <g clip-path="url(#hiclip)">
+        <rect width="1024" height="1024" fill="url(#hibgG)"/>
+        <rect y="580" width="1024" height="444" fill="rgba(10,14,48,.6)"/>
+        <ellipse cx="165" cy="614" rx="65" ry="14" fill="rgba(6,10,32,.44)" filter="url(#hishF)"/>
+        <ellipse cx="410" cy="672" rx="116" ry="18" fill="rgba(6,10,32,.50)" filter="url(#hishF)"/>
+        <ellipse cx="794" cy="672" rx="116" ry="18" fill="rgba(6,10,32,.50)" filter="url(#hishF)"/>
+        <circle cx="165" cy="528" r="72" fill="url(#himiloBodyG)"/>
+        <circle cx="165" cy="528" r="72" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="2.5"/>
+        <rect x="129" y="574" width="72" height="18" rx="8" fill="#141830"/>
+        <line x1="143" y1="574" x2="143" y2="592" stroke="rgba(255,255,255,.07)" stroke-width="2"/>
+        <line x1="165" y1="574" x2="165" y2="592" stroke="rgba(255,255,255,.07)" stroke-width="2"/>
+        <line x1="187" y1="574" x2="187" y2="592" stroke="rgba(255,255,255,.07)" stroke-width="2"/>
+        <circle cx="134" cy="487" r="5.5" fill="rgba(255,255,255,.22)"/>
+        <circle cx="196" cy="487" r="5.5" fill="rgba(255,255,255,.22)"/>
+        <line x1="93" y1="527" x2="237" y2="527" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
+        <rect x="127" y="509" width="76" height="36" rx="10" fill="#080C20"/>
+        <rect x="129" y="511" width="72" height="32" rx="9" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1.5"/>
+        <line x1="165" y1="456" x2="165" y2="438" stroke="rgba(160,180,240,.58)" stroke-width="4" stroke-linecap="round"/>
+        <rect x="228" y="494" width="36" height="22" rx="8" fill="url(#hiclampFG)"/>
+        <rect x="230" y="496" width="32" height="18" rx="7" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1.5"/>
+        <rect x="228" y="542" width="36" height="22" rx="8" fill="url(#hiclampFG)"/>
+        <rect x="230" y="544" width="32" height="18" rx="7" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1.5"/>
+        <rect x="131" y="513" width="28" height="22" rx="6" fill="#78EEFF" filter="url(#hiledF)"/>
+        <rect x="167" y="513" width="28" height="22" rx="6" fill="#78EEFF" filter="url(#hiledF)"/>
+        <rect x="139" y="519" width="11" height="12" rx="3" fill="rgba(0,18,36,.65)"/>
+        <rect x="176" y="519" width="11" height="12" rx="3" fill="rgba(0,18,36,.65)"/>
+        <circle cx="165" cy="430" r="9" fill="#FFD060" filter="url(#hiantF)"/>
+        <circle cx="165" cy="430" r="6" fill="#FFEC90"/>
+        <circle cx="252" cy="505" r="5" fill="#78EEFF" filter="url(#hiledF)"/>
+        <circle cx="252" cy="553" r="5" fill="#78EEFF" filter="url(#hiledF)"/>
+        <line x1="255" y1="505" x2="274" y2="505" stroke="rgba(120,238,255,.38)" stroke-width="3" stroke-linecap="round"/>
+        <line x1="255" y1="524" x2="274" y2="524" stroke="rgba(120,238,255,.26)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="255" y1="553" x2="274" y2="553" stroke="rgba(120,238,255,.2)" stroke-width="2" stroke-linecap="round"/>
+        <rect x="274" y="388" width="272" height="272" rx="46" fill="url(#hiboxFG)"/>
+        <rect x="274" y="388" width="272" height="272" rx="46" fill="url(#hiboxGlintG)"/>
+        <g clip-path="url(#hilbClip)">
+          <rect x="312" y="426" width="196" height="196" rx="24" fill="rgba(0,0,0,.07)"/>
+          <line x1="312" y1="426" x2="508" y2="622" stroke="rgba(90,42,8,.38)" stroke-width="5"/>
+          <line x1="508" y1="426" x2="312" y2="622" stroke="rgba(90,42,8,.38)" stroke-width="5"/>
+          <rect x="312" y="426" width="196" height="196" rx="24" fill="none" stroke="rgba(90,42,8,.4)" stroke-width="5"/>
+          <rect x="274" y="634" width="272" height="26" fill="rgba(0,0,0,.16)"/>
+        </g>
+        <line x1="279" y1="393" x2="541" y2="393" stroke="rgba(255,255,255,.3)" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="279" cy="393" r="4.5" fill="rgba(255,255,255,.8)"/>
+        <polygon points="536,508 596,508 596,486 636,524 596,562 596,540 536,540" fill="rgba(232,237,252,.74)"/>
+        <polygon points="536,508 596,508 596,496 618,524 596,552 596,540 536,540" fill="rgba(255,255,255,.14)"/>
+        <rect x="658" y="388" width="272" height="272" rx="46" fill="#1A3C3C" stroke="#4EBE7A" stroke-width="18"/>
+        <rect x="688" y="418" width="212" height="212" rx="28" fill="rgba(0,0,0,.1)"/>
+        <circle cx="794" cy="524" r="38" fill="#4EBE7A" filter="url(#higlF)"/>
+        <rect width="1024" height="1024" fill="url(#hivigG)"/>
+      </g>
+    </svg>
+  </div>
+
+  <h1>Push Box</h1>
+  <p class="hero-sub">A quiet little puzzle about pushing things into place. One move at a time.</p>
+  <div class="hero-actions">
+    <a href="https://apps.apple.com/app/id6779065556" target="_blank" rel="noopener" class="store-btn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      Download on App Store
+    </a>
+    <a href="#features" class="store-btn store-btn-ghost">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      Learn more
+    </a>
+  </div>
+  <div class="hero-pills">
+    <span class="hero-pill">155 Levels</span>
+    <span class="hero-pill">Daily Challenge</span>
+    <span class="hero-pill">No Ads</span>
+    <span class="hero-pill">iPhone & iPad</span>
+  </div>
+</section>
+
+<!-- ──────────────── MARQUEE ──────────────── -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>155 Levels</span><span>Daily Challenge</span><span>Dark Mode</span><span>Undo Anytime</span><span>iPhone &amp; iPad</span><span>No Ads</span><span>Offline Play</span><span>Push, Never Pull</span>
+    <span>155 Levels</span><span>Daily Challenge</span><span>Dark Mode</span><span>Undo Anytime</span><span>iPhone &amp; iPad</span><span>No Ads</span><span>Offline Play</span><span>Push, Never Pull</span>
+  </div>
+</div>
+
+<!-- ──────────────── FEATURES ──────────────── -->
+<section class="features" id="features">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Why Push Box</div>
+      <h2 class="section-title">Simple rules.<br>Deep satisfaction.</h2>
+      <p class="section-body">A puzzle game stripped to its essence — no timers, no energy bars, no distractions. Just you, Milo, and the boxes.</p>
+    </div>
+    <div class="feat-grid reveal">
+      <div class="feat-card">
+        <div class="feat-icon ic-terra">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.6l8.4 4.7v9.4L12 21.4 3.6 16.7V7.3Z"/><path d="M3.7 7.2 12 12l8.3-4.8 M12 12v9.2"/></svg>
+        </div>
+        <h3 class="feat-title">155 hand-crafted levels</h3>
+        <p class="feat-body">Four packs of puzzles, from breezy warm-ups to devious head-scratchers. Every level is solvable — and worth solving.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon ic-accent">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 9.5h17 M8 3v4 M16 3v4"/></svg>
+        </div>
+        <h3 class="feat-title">Daily Challenge</h3>
+        <p class="feat-body">A fresh puzzle every day. Build your streak — come back tomorrow and keep the chain going. No pressure, just a nudge.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon ic-good">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.5L19 6.5"/></svg>
+        </div>
+        <h3 class="feat-title">No ads. No purchases.</h3>
+        <p class="feat-body">Pay once, play everything. No subscriptions, no energy timers, no nudges to spend. Your attention belongs to the puzzle.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon ic-accent">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 13.5A8.5 8.5 0 1 1 10.5 3.5 6.6 6.6 0 0 0 20.5 13.5Z"/></svg>
+        </div>
+        <h3 class="feat-title">Light & dark mode</h3>
+        <p class="feat-body">A warm cream-and-periwinkle palette for daytime, a cozy dark theme for late nights. Follows your system setting automatically.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon ic-terra">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14l-4-4 4-4 M5 10h8.5a4.5 4.5 0 0 1 0 9H8"/></svg>
+        </div>
+        <h3 class="feat-title">Undo — always</h3>
+        <p class="feat-body">Made a wrong move? Step back one push at a time, or reset the whole level. Experiment freely. No penalties, ever.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon ic-good">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M9 7h6 M9 11h6 M9 15h4"/></svg>
+        </div>
+        <h3 class="feat-title">iPhone & iPad</h3>
+        <p class="feat-body">Designed for both. On iPhone, swipe anywhere to move. On iPad, a dedicated side panel keeps the board front and center.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────── SCREENSHOTS ──────────────── -->
+<section class="screenshots" id="screenshots">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center">
+      <div class="section-label">A closer look</div>
+      <h2 class="section-title">Clean. Calm. Considered.</h2>
+    </div>
+    <div class="phones-row reveal">
+
+      <!-- Phone 1: Home screen -->
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen ps-home">
+            <div style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:8px">
+              <span style="background:var(--card);border-radius:999px;padding:5px 10px;display:flex;align-items:center;gap:5px;font-size:11px;font-weight:800;color:var(--terra);box-shadow:0 2px 6px rgba(50,42,20,.07)">🔥 3</span>
+              <div style="display:flex;gap:6px">
+                <div style="width:32px;height:32px;border-radius:50%;background:var(--card);box-shadow:0 2px 6px rgba(50,42,20,.07);display:flex;align-items:center;justify-content:center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14 M5 12h14 M5 17h14"/><circle cx="9" cy="7" r="2" fill="var(--card)"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="ps-logomark">
+              <svg viewBox="0 0 24 24" width="36%" height="36%" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+            </div>
+            <div class="ps-title">Push Box</div>
+            <div class="ps-sub">Push every box onto a goal</div>
+            <div class="ps-pill">8 / 155 solved</div>
+            <div style="height:8px"></div>
+            <div style="background:var(--accent-s);border-radius:13px;padding:10px 12px;display:flex;align-items:center;gap:10px;width:100%">
+              <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(160deg,#6A7DB6,#54689F);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 9.5h17 M8 3v4 M16 3v4"/></svg>
+              </div>
+              <div style="flex:1"><div style="font-weight:800;font-size:11px;color:var(--accent-si)">Daily Challenge</div><div style="font-size:10px;color:var(--accent-si);opacity:.7;font-weight:600">Level 7 · 2 boxes</div></div>
+            </div>
+            <div class="ps-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.87l12-7.5a1 1 0 0 0 0-1.74l-12-7.5A1 1 0 0 0 7 4.5Z"/></svg>
+              Continue · Level 9
+            </div>
+            <div class="ps-card-row" style="margin-top:8px">
+              <div class="ps-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
+                Levels
+              </div>
+              <div class="ps-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M9.2 9.3a2.8 2.8 0 0 1 5.4 1c0 1.9-2.6 2-2.6 3.7"/><circle cx="12" cy="17.4" r=".4" fill="var(--ink)"/></svg>
+                How to
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="phone-label">Home</span>
+      </div>
+
+      <!-- Phone 2: Game screen -->
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen ps-game">
+            <div class="ps-game-top">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(50,42,20,.07)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+              </div>
+              <div class="ps-game-title">Level 5</div>
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(50,42,20,.07)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14 M5 12h14 M5 17h14"/><circle cx="9" cy="7" r="2" fill="var(--card)"/></svg>
+              </div>
+            </div>
+            <div class="ps-chips">
+              <div class="ps-chip"><div class="ps-chip-v">14</div><div class="ps-chip-l">MOVES</div></div>
+              <div class="ps-chip"><div class="ps-chip-v">6</div><div class="ps-chip-l">PUSHES</div></div>
+              <div class="ps-chip"><div class="ps-chip-v">0:42</div><div class="ps-chip-l">TIME</div></div>
+              <div class="ps-chip"><div class="ps-chip-v">1/2</div><div class="ps-chip-l">GOAL</div></div>
+            </div>
+            <!-- Mini board: 7 cols x 5 rows -->
+            <div class="board-mini">
+              <div class="board-grid" style="grid-template-columns:repeat(7,1fr);width:142px;gap:2px">
+                <!-- Row 0: ####### -->
+                <div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div>
+                <!-- Row 1: # . . # -->
+                <div class="cell cw"></div><div class="cell cf"></div>
+                <div class="cell cf" style="position:relative;padding-top:100%">
+                  <div style="position:absolute;inset:28%;border-radius:50%;border:2px solid #3FA46F;background:rgba(63,164,111,.14)"></div>
+                  <div style="position:absolute;inset:44%;background:#3FA46F;border-radius:50%"></div>
+                </div>
+                <div class="cell cf"></div>
+                <div class="cell cf" style="position:relative;padding-top:100%">
+                  <div style="position:absolute;inset:28%;border-radius:50%;border:2px solid #3FA46F;background:rgba(63,164,111,.14)"></div>
+                  <div style="position:absolute;inset:44%;background:#3FA46F;border-radius:50%"></div>
+                </div>
+                <div class="cell cf"></div><div class="cell cw"></div>
+                <!-- Row 2: # $@$ # -->
+                <div class="cell cw"></div><div class="cell cf"></div><div class="cell cb" style="padding-top:100%;border-radius:6px"></div>
+                <div class="cell cp" style="padding-top:100%;border-radius:50%"></div>
+                <div class="cell cog" style="padding-top:100%;border-radius:6px"></div>
+                <div class="cell cf"></div><div class="cell cw"></div>
+                <!-- Row 3: #     # -->
+                <div class="cell cw"></div><div class="cell cf"></div><div class="cell cf"></div><div class="cell cf"></div><div class="cell cf"></div><div class="cell cf"></div><div class="cell cw"></div>
+                <!-- Row 4: ####### -->
+                <div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div>
+              </div>
+            </div>
+            <!-- Mini dpad -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:6px">
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:120px;justify-items:center">
+                <div></div>
+                <div style="width:36px;height:30px;background:var(--card);border-radius:9px;box-shadow:0 2px 6px rgba(50,42,20,.07);display:flex;align-items:center;justify-content:center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15l7-7 7 7"/></svg>
+                </div>
+                <div></div>
+                <div style="width:36px;height:30px;background:var(--card);border-radius:9px;box-shadow:0 2px 6px rgba(50,42,20,.07);display:flex;align-items:center;justify-content:center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+                </div>
+                <div style="width:36px;height:30px;background:rgba(239,234,221,.7);border-radius:9px;opacity:.5"></div>
+                <div style="width:36px;height:30px;background:var(--card);border-radius:9px;box-shadow:0 2px 6px rgba(50,42,20,.07);display:flex;align-items:center;justify-content:center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+                </div>
+                <div></div>
+                <div style="width:36px;height:30px;background:var(--card);border-radius:9px;box-shadow:0 2px 6px rgba(50,42,20,.07);display:flex;align-items:center;justify-content:center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l7 7 7-7"/></svg>
+                </div>
+                <div></div>
+              </div>
+              <div style="display:flex;gap:5px;width:120px">
+                <div style="flex:1;height:28px;background:var(--card);border-radius:9px;box-shadow:0 2px 6px rgba(50,42,20,.07);display:flex;align-items:center;justify-content:center;gap:4px;font-size:10px;font-weight:700;color:var(--ink)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14l-4-4 4-4 M5 10h8.5a4.5 4.5 0 0 1 0 9H8"/></svg>Undo
+                </div>
+                <div style="flex:1;height:28px;background:var(--card);border-radius:9px;box-shadow:0 2px 6px rgba(50,42,20,.07);display:flex;align-items:center;justify-content:center;gap:4px;font-size:10px;font-weight:700;color:var(--ink)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1 M3 4v4.5h4.5"/></svg>Reset
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="phone-label">Playing</span>
+      </div>
+
+      <!-- Phone 3: Win screen -->
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen ps-win">
+            <!-- Background board (blurred, behind overlay) -->
+            <div style="position:absolute;inset:0;background:rgba(239,234,221,.6);backdrop-filter:blur(3px)"></div>
+            <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%">
+              <div class="ps-win-badge">
+                <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.5L19 6.5"/></svg>
+              </div>
+              <div class="ps-win-title">Solved!</div>
+              <div class="ps-win-sub">Level 5 complete</div>
+              <div class="ps-win-stats">
+                <div class="ps-win-stat"><div class="ps-win-v">14</div><div class="ps-win-l">MOVES</div></div>
+                <div class="ps-win-stat"><div class="ps-win-v">6</div><div class="ps-win-l">PUSHES</div></div>
+                <div class="ps-win-stat"><div class="ps-win-v">0:42</div><div class="ps-win-l">TIME</div></div>
+              </div>
+              <div class="ps-win-btn">Next Level →</div>
+              <div style="display:flex;gap:8px;width:100%;margin-top:8px">
+                <div style="flex:1;background:var(--card);border-radius:10px;padding:10px;text-align:center;font-size:11px;font-weight:700;box-shadow:0 2px 8px rgba(50,42,20,.07)">Replay</div>
+                <div style="flex:1;background:var(--card);border-radius:10px;padding:10px;text-align:center;font-size:11px;font-weight:700;box-shadow:0 2px 8px rgba(50,42,20,.07)">Levels</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="phone-label">Level complete</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────── HOW TO PLAY ──────────────── -->
+<section class="howto" id="howtoplay">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center;margin-bottom:0">
+      <div class="section-label">Simple to learn</div>
+      <h2 class="section-title">How it works</h2>
+    </div>
+    <div class="steps-row reveal">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3 class="step-title">Move Milo</h3>
+        <p class="step-body">Swipe anywhere on the board, or tap the on-screen arrows. Milo walks one square per move in any direction.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3 class="step-title">Push the boxes</h3>
+        <p class="step-body">Walk Milo into a box to push it forward. You can only push one box at a time — and you can never pull. Plan your route.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3 class="step-title">Fill every goal</h3>
+        <p class="step-body">Get every terracotta box onto a glowing goal marker. When all goals are filled, the level is solved. Stuck? Undo anytime.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────── DAILY CHALLENGE ──────────────── -->
+<section class="daily">
+  <div class="section-inner">
+    <div class="daily-inner reveal">
+      <div class="daily-text">
+        <div class="section-label">New every day</div>
+        <h2 class="section-title">Daily Challenge</h2>
+        <p class="section-body">A fresh puzzle every morning — same one for everyone, worldwide. Build your streak and see how your solution compares.</p>
+        <div style="height:32px"></div>
+        <a href="#download" class="daily-play-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.87l12-7.5a1 1 0 0 0 0-1.74l-12-7.5A1 1 0 0 0 7 4.5Z"/></svg>
+          Play today's puzzle
+        </a>
+      </div>
+      <div class="daily-card-preview">
+        <div class="daily-card-date">Today · Tuesday, June 10</div>
+        <div style="background:rgba(255,255,255,.06);border-radius:16px;padding:18px;display:flex;align-items:center;justify-content:center">
+          <!-- Mini board -->
+          <div class="board-grid" style="grid-template-columns:repeat(7,1fr);width:126px;gap:2px">
+            <div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div>
+            <div class="cell cw"></div><div class="cell cf"></div><div class="cell cf"></div><div class="cell cf"></div><div class="cell cf"></div><div class="cell cf"></div><div class="cell cw"></div>
+            <div class="cell cw"></div><div class="cell cf"></div><div class="cell cb" style="padding-top:100%;border-radius:5px"></div><div class="cell cf"></div><div class="cell cog" style="padding-top:100%;border-radius:5px"></div><div class="cell cf"></div><div class="cell cw"></div>
+            <div class="cell cw"></div><div class="cell cf"></div><div class="cell cf"></div><div class="cell cp" style="padding-top:100%;border-radius:50%"></div><div class="cell cf"></div><div class="cell cf"></div><div class="cell cw"></div>
+            <div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div><div class="cell cw"></div>
+          </div>
+        </div>
+        <div style="color:rgba(255,255,255,.6);font-size:14px;font-weight:600">Level 7 · 2 boxes</div>
+        <div>
+          <div class="daily-streak-row">
+            <div class="daily-streak-day on">🔥</div>
+            <div class="daily-streak-day on">🔥</div>
+            <div class="daily-streak-day on">🔥</div>
+            <div class="daily-streak-day">T</div>
+            <div class="daily-streak-day">F</div>
+            <div class="daily-streak-day">S</div>
+            <div class="daily-streak-day">S</div>
+          </div>
+          <div class="daily-streak-label" style="margin-top:8px">3-day streak · keep it going</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────── DOWNLOAD CTA ──────────────── -->
+<section class="cta-section" id="download">
+  <div class="section-inner reveal" style="text-align:center">
+    <div class="cta-icon">
+      <svg width="120" height="120" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="ciclip"><rect width="1024" height="1024"/></clipPath>
+        <clipPath id="cilbClip"><rect x="274" y="388" width="272" height="272" rx="46"/></clipPath>
+        <radialGradient id="cibgG" cx="42%" cy="35%" r="68%">
+          <stop offset="0%" stop-color="#6070AA"/><stop offset="50%" stop-color="#3E4D8A"/><stop offset="100%" stop-color="#181F5C"/>
+        </radialGradient>
+        <linearGradient id="ciboxFG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#F0B060"/><stop offset="42%" stop-color="#CC8030"/><stop offset="100%" stop-color="#7A3E10"/>
+        </linearGradient>
+        <radialGradient id="ciboxGlintG" cx="18%" cy="18%" r="52%">
+          <stop offset="0%" stop-color="rgba(255,255,255,.44)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+        </radialGradient>
+        <radialGradient id="cimiloBodyG" cx="30%" cy="26%" r="65%">
+          <stop offset="0%" stop-color="#5568A8"/><stop offset="55%" stop-color="#3A4A84"/><stop offset="100%" stop-color="#1C2460"/>
+        </radialGradient>
+        <linearGradient id="ciclampFG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#3C4878"/><stop offset="100%" stop-color="#1E2450"/>
+        </linearGradient>
+        <radialGradient id="civigG" cx="50%" cy="50%" r="70%">
+          <stop offset="0%" stop-color="rgba(0,0,0,0)"/><stop offset="100%" stop-color="rgba(0,0,0,.42)"/>
+        </radialGradient>
+        <filter id="cishF"><feGaussianBlur stdDeviation="18"/></filter>
+        <filter id="ciledF"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="ciantF"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="ciglF"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <g clip-path="url(#ciclip)">
+        <rect width="1024" height="1024" fill="url(#cibgG)"/>
+        <rect y="580" width="1024" height="444" fill="rgba(10,14,48,.6)"/>
+        <ellipse cx="165" cy="614" rx="65" ry="14" fill="rgba(6,10,32,.44)" filter="url(#cishF)"/>
+        <ellipse cx="410" cy="672" rx="116" ry="18" fill="rgba(6,10,32,.50)" filter="url(#cishF)"/>
+        <ellipse cx="794" cy="672" rx="116" ry="18" fill="rgba(6,10,32,.50)" filter="url(#cishF)"/>
+        <circle cx="165" cy="528" r="72" fill="url(#cimiloBodyG)"/>
+        <circle cx="165" cy="528" r="72" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="2.5"/>
+        <rect x="129" y="574" width="72" height="18" rx="8" fill="#141830"/>
+        <line x1="143" y1="574" x2="143" y2="592" stroke="rgba(255,255,255,.07)" stroke-width="2"/>
+        <line x1="165" y1="574" x2="165" y2="592" stroke="rgba(255,255,255,.07)" stroke-width="2"/>
+        <line x1="187" y1="574" x2="187" y2="592" stroke="rgba(255,255,255,.07)" stroke-width="2"/>
+        <circle cx="134" cy="487" r="5.5" fill="rgba(255,255,255,.22)"/>
+        <circle cx="196" cy="487" r="5.5" fill="rgba(255,255,255,.22)"/>
+        <line x1="93" y1="527" x2="237" y2="527" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
+        <rect x="127" y="509" width="76" height="36" rx="10" fill="#080C20"/>
+        <rect x="129" y="511" width="72" height="32" rx="9" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1.5"/>
+        <line x1="165" y1="456" x2="165" y2="438" stroke="rgba(160,180,240,.58)" stroke-width="4" stroke-linecap="round"/>
+        <rect x="228" y="494" width="36" height="22" rx="8" fill="url(#ciclampFG)"/>
+        <rect x="230" y="496" width="32" height="18" rx="7" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1.5"/>
+        <rect x="228" y="542" width="36" height="22" rx="8" fill="url(#ciclampFG)"/>
+        <rect x="230" y="544" width="32" height="18" rx="7" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1.5"/>
+        <rect x="131" y="513" width="28" height="22" rx="6" fill="#78EEFF" filter="url(#ciledF)"/>
+        <rect x="167" y="513" width="28" height="22" rx="6" fill="#78EEFF" filter="url(#ciledF)"/>
+        <rect x="139" y="519" width="11" height="12" rx="3" fill="rgba(0,18,36,.65)"/>
+        <rect x="176" y="519" width="11" height="12" rx="3" fill="rgba(0,18,36,.65)"/>
+        <circle cx="165" cy="430" r="9" fill="#FFD060" filter="url(#ciantF)"/>
+        <circle cx="165" cy="430" r="6" fill="#FFEC90"/>
+        <circle cx="252" cy="505" r="5" fill="#78EEFF" filter="url(#ciledF)"/>
+        <circle cx="252" cy="553" r="5" fill="#78EEFF" filter="url(#ciledF)"/>
+        <line x1="255" y1="505" x2="274" y2="505" stroke="rgba(120,238,255,.38)" stroke-width="3" stroke-linecap="round"/>
+        <line x1="255" y1="524" x2="274" y2="524" stroke="rgba(120,238,255,.26)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="255" y1="553" x2="274" y2="553" stroke="rgba(120,238,255,.2)" stroke-width="2" stroke-linecap="round"/>
+        <rect x="274" y="388" width="272" height="272" rx="46" fill="url(#ciboxFG)"/>
+        <rect x="274" y="388" width="272" height="272" rx="46" fill="url(#ciboxGlintG)"/>
+        <g clip-path="url(#cilbClip)">
+          <rect x="312" y="426" width="196" height="196" rx="24" fill="rgba(0,0,0,.07)"/>
+          <line x1="312" y1="426" x2="508" y2="622" stroke="rgba(90,42,8,.38)" stroke-width="5"/>
+          <line x1="508" y1="426" x2="312" y2="622" stroke="rgba(90,42,8,.38)" stroke-width="5"/>
+          <rect x="312" y="426" width="196" height="196" rx="24" fill="none" stroke="rgba(90,42,8,.4)" stroke-width="5"/>
+          <rect x="274" y="634" width="272" height="26" fill="rgba(0,0,0,.16)"/>
+        </g>
+        <line x1="279" y1="393" x2="541" y2="393" stroke="rgba(255,255,255,.3)" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="279" cy="393" r="4.5" fill="rgba(255,255,255,.8)"/>
+        <polygon points="536,508 596,508 596,486 636,524 596,562 596,540 536,540" fill="rgba(232,237,252,.74)"/>
+        <polygon points="536,508 596,508 596,496 618,524 596,552 596,540 536,540" fill="rgba(255,255,255,.14)"/>
+        <rect x="658" y="388" width="272" height="272" rx="46" fill="#1A3C3C" stroke="#4EBE7A" stroke-width="18"/>
+        <rect x="688" y="418" width="212" height="212" rx="28" fill="rgba(0,0,0,.1)"/>
+        <circle cx="794" cy="524" r="38" fill="#4EBE7A" filter="url(#ciglF)"/>
+        <rect width="1024" height="1024" fill="url(#civigG)"/>
+      </g>
+    </svg>
+    </div>
+    <div class="section-label">Ready to push?</div>
+    <h2 class="section-title">Download Push Box</h2>
+    <p class="section-body" style="margin:0 auto 36px">Free to try. One purchase unlocks everything — no subscriptions, no tricks.</p>
+    <div class="cta-badges">
+      <a href="https://apps.apple.com/app/id6779065556" target="_blank" rel="noopener" class="store-btn" style="background:var(--ink);color:#fff;box-shadow:0 8px 28px rgba(0,0,0,.2)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        <div style="text-align:left"><div style="font-size:11px;opacity:.7;font-weight:600">Download on the</div><div>App Store</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────── FOOTER ──────────────── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="nav-logo" style="width:28px;height:28px;border-radius:8px">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+      </div>
+      Push Box
+    </div>
+    <div>A quiet little puzzle. Made with care.</div>
+    <div style="display:flex;gap:18px">
+      <a href="#" style="color:rgba(255,255,255,.4)">Privacy</a>
+      <a href="#" style="color:rgba(255,255,255,.4)">Support</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Sticky nav
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+// Reveal on scroll
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+  });
+}, { threshold: 0.12 });
+reveals.forEach(el => io.observe(el));
+</script>
+</body>
+</html>
