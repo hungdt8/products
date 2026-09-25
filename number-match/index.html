@@ -1,0 +1,623 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Number Match</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EEF1F7;
+    --paper:#FFFFFF;
+    --paper-2:#F6F8FC;
+    --ink:#1D2636;
+    --ink-soft:#6B778C;
+    --ink-faint:#A4ADBF;
+    --line:#DDE2EB;
+    --border:#9DA4BB;
+    --accent:#3E7BFA;
+    --accent-ink:#FFFFFF;
+    --accent-soft:#A9DAFF;
+    --accent-soft-bg:#DCEEFF;
+    --gold:#B8860B;
+    --gold-bg:#FBEBC7;
+    --success:#1F9E6E;
+    --danger:#B03A3A;
+    --d1:#2F6FED; --d2:#1F9E6E; --d3:#C45C1C; --d4:#8B4CC8; --d5:#C03A6B;
+    --d6:#0E8A9A; --d7:#9A6A10; --d8:#4A5AD6; --d9:#B03A3A;
+    --shadow-1: 0 1px 2px rgba(29,38,54,.04), 0 8px 24px rgba(29,38,54,.06);
+    --shadow-2: 0 18px 40px rgba(29,38,54,.10);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0E1118; --paper:#181D26; --paper-2:#1B212E;
+      --ink:#F2F5FB; --ink-soft:#939EB4; --ink-faint:#5B6479;
+      --line:#2C3444; --border:#39445A;
+      --accent:#5B8CFF; --accent-ink:#0E1118; --accent-soft:#1E4678; --accent-soft-bg:#16314F;
+      --gold:#FFD23D; --gold-bg:#3A3013; --success:#3DD68C; --danger:#FF6F63;
+      --d1:#6E9EFF; --d2:#4BD09B; --d3:#F29A5B; --d4:#B98CF0; --d5:#F07AA8;
+      --d6:#4AC6D6; --d7:#E0B04A; --d8:#8B98FF; --d9:#FF7E7E;
+      --shadow-1: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+      --shadow-2: 0 18px 40px rgba(0,0,0,.45);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1118; --paper:#181D26; --paper-2:#1B212E;
+    --ink:#F2F5FB; --ink-soft:#939EB4; --ink-faint:#5B6479;
+    --line:#2C3444; --border:#39445A;
+    --accent:#5B8CFF; --accent-ink:#0E1118; --accent-soft:#1E4678; --accent-soft-bg:#16314F;
+    --gold:#FFD23D; --gold-bg:#3A3013; --success:#3DD68C; --danger:#FF6F63;
+    --d1:#6E9EFF; --d2:#4BD09B; --d3:#F29A5B; --d4:#B98CF0; --d5:#F07AA8;
+    --d6:#4AC6D6; --d7:#E0B04A; --d8:#8B98FF; --d9:#FF7E7E;
+    --shadow-1: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    --shadow-2: 0 18px 40px rgba(0,0,0,.45);
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    padding-inline:20px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto}
+  .display{font-family:'Nunito',-apple-system,sans-serif;font-weight:900;letter-spacing:-.01em}
+  h1,h2,h3{text-wrap:balance;margin:0}
+  p{margin:0}
+  a{color:inherit}
+  img{max-width:100%;display:block}
+
+  /* ---------- nav ---------- */
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-block:22px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Nunito';font-weight:900;font-size:1.05rem}
+  .brand img{width:30px;height:30px;border-radius:8px;box-shadow:var(--shadow-1)}
+  .nav a.store-mini{
+    font-family:'Nunito';font-weight:800;font-size:.85rem;
+    background:var(--accent);color:var(--accent-ink);
+    padding:9px 18px;border-radius:999px;text-decoration:none;
+    box-shadow:0 6px 18px color-mix(in srgb, var(--accent) 45%, transparent);
+    transition:transform .15s ease;
+  }
+  .nav a.store-mini:hover{transform:translateY(-1px)}
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding-block:28px 56px;
+    display:grid;
+    gap:34px;
+  }
+  .eyebrow{
+    font-family:'Inter';font-weight:700;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .chips{display:flex;gap:8px;margin-bottom:18px}
+  .chip{
+    width:52px;height:52px;border-radius:14px;background:var(--paper);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Nunito';font-weight:900;font-size:1.4rem;
+    box-shadow:var(--shadow-1);
+  }
+  .hero h1{font-size:clamp(2.6rem,9vw,4.6rem);line-height:.98}
+  .hero .tag{
+    margin-top:16px;font-size:clamp(1.05rem,2.6vw,1.25rem);color:var(--ink-soft);
+    max-width:34ch;font-weight:500;
+  }
+  .cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+  .btn{
+    font-family:'Nunito';font-weight:800;font-size:1rem;
+    padding:15px 26px;border-radius:999px;border:none;cursor:pointer;
+    text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:focus-visible{outline:3px solid var(--accent-soft);outline-offset:2px}
+  .btn-primary{
+    background:var(--accent);color:var(--accent-ink);
+    box-shadow:0 10px 26px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .btn-primary:hover{transform:translateY(-2px)}
+  .btn-ghost{
+    background:transparent;color:var(--ink);border:1.5px solid var(--border);
+  }
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* ---------- demo board ---------- */
+  .demo-wrap{
+    background:var(--paper);border-radius:22px;padding:26px;
+    box-shadow:var(--shadow-2);border:1px solid var(--line);
+    display:grid;gap:16px;justify-items:center;
+    position:relative;
+  }
+  .demo-label{
+    display:flex;align-items:center;justify-content:space-between;width:100%;
+  }
+  .demo-title{font-family:'Nunito';font-weight:800;font-size:.95rem;color:var(--ink)}
+  .demo-hint{font-size:.78rem;color:var(--ink-faint);font-weight:500}
+  .board{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    width:min(300px,74vw);
+    aspect-ratio:1;
+    background:var(--paper-2);
+    border:1.5px solid var(--border);
+    border-radius:8px;
+    overflow:hidden;
+  }
+  .cell{
+    position:relative;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Nunito';font-weight:800;font-size:clamp(1.6rem,7vw,2.1rem);
+    color:var(--ink);
+    background:var(--paper);
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+    transition:background-color .18s ease;
+  }
+  .board .cell:nth-child(3n){border-right:none}
+  .board .cell:nth-child(n+7){border-bottom:none}
+  .cell[data-empty="1"]{cursor:default}
+  .cell.selected{background:var(--accent-soft-bg)}
+  .cell:focus-visible{outline:3px solid var(--accent);outline-offset:-3px;z-index:1}
+  .cell.shake{animation:shake .32s ease}
+  .cell .num{transition:opacity .15s ease, transform .15s ease}
+  .cell[data-empty="1"] .num{opacity:0}
+  .cell .spark{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:1.1rem;opacity:0;color:var(--success);
+  }
+  @keyframes shake{
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-4px)}
+    75%{transform:translateX(4px)}
+  }
+  .connector{
+    position:absolute;height:9px;border-radius:999px;background:var(--accent);
+    transform-origin:left center;left:0;top:0;
+    width:0;opacity:0;pointer-events:none;
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+  .connector.on{transition:width .22s cubic-bezier(.2,.8,.3,1)}
+
+  /* ---------- section shell ---------- */
+  section{padding-block:52px}
+  .section-head{max-width:46ch;margin-bottom:30px}
+  .section-head .eyebrow{margin-bottom:10px}
+  .section-head h2{font-size:clamp(1.6rem,4.4vw,2.2rem)}
+  .section-head p{color:var(--ink-soft);margin-top:10px;font-size:1.02rem;line-height:1.6}
+
+  /* ---------- rules ---------- */
+  .rules{display:grid;gap:14px;grid-template-columns:repeat(3,1fr)}
+  .rule-card{
+    background:var(--paper);border-radius:18px;padding:20px 18px;
+    box-shadow:var(--shadow-1);border:1px solid var(--line);
+    display:grid;gap:14px;justify-items:center;text-align:center;
+  }
+  .mini-grid{display:flex;gap:4px;align-items:center}
+  .mini-cell{
+    width:38px;height:38px;border-radius:0;background:var(--paper-2);
+    border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+    font-family:'Nunito';font-weight:800;font-size:1.05rem;
+  }
+  .mini-cell.hi{background:var(--accent-soft-bg);color:var(--accent)}
+  .mini-link{color:var(--ink-faint);font-size:.85rem}
+  .rule-card h3{font-family:'Nunito';font-weight:800;font-size:1rem}
+  .rule-card p{font-size:.86rem;color:var(--ink-soft);line-height:1.5}
+
+  /* ---------- modes ---------- */
+  .modes{display:grid;gap:16px;grid-template-columns:repeat(3,1fr)}
+  .mode-card{
+    background:var(--paper);border-radius:20px;padding:24px 20px;
+    box-shadow:var(--shadow-1);border:1px solid var(--line);
+    display:grid;gap:12px;
+  }
+  .mode-icon{
+    width:52px;height:52px;border-radius:15px;
+    display:flex;align-items:center;justify-content:center;color:#fff;
+  }
+  .mode-card h3{font-family:'Nunito';font-weight:800;font-size:1.12rem}
+  .mode-card p{font-size:.9rem;color:var(--ink-soft);line-height:1.55}
+  .mode-tag{
+    justify-self:start;font-size:.74rem;font-weight:700;color:var(--gold);
+    background:var(--gold-bg);padding:5px 11px;border-radius:999px;
+  }
+
+  /* ---------- features ---------- */
+  .features{display:grid;gap:12px;grid-template-columns:repeat(3,1fr)}
+  .feature{
+    padding:18px;border-radius:16px;background:var(--paper-2);
+    display:grid;gap:8px;border:1px solid var(--line);
+  }
+  .feature .ic{color:var(--accent)}
+  .feature h4{font-family:'Nunito';font-weight:800;font-size:.92rem}
+  .feature p{font-size:.82rem;color:var(--ink-soft);line-height:1.5}
+
+  /* ---------- showcase ---------- */
+  .showcase{
+    display:grid;grid-template-columns:220px 1fr;gap:40px;align-items:center;
+  }
+  .phone{
+    border-radius:34px;padding:8px;background:var(--ink);
+    box-shadow:var(--shadow-2);
+  }
+  .phone img{border-radius:26px;display:block}
+  .showcase-list{display:grid;gap:16px}
+  .showcase-item{display:flex;gap:12px;align-items:flex-start}
+  .showcase-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:8px;flex:none;
+  }
+  .showcase-item strong{font-family:'Nunito';font-weight:800;font-size:.98rem}
+  .showcase-item p{font-size:.88rem;color:var(--ink-soft);margin-top:3px;line-height:1.5}
+
+  /* ---------- languages strip ---------- */
+  .langs{
+    display:flex;flex-wrap:wrap;gap:9px;
+  }
+  .lang-pill{
+    font-size:.82rem;font-weight:600;color:var(--ink-soft);
+    background:var(--paper);border:1px solid var(--line);
+    padding:7px 13px;border-radius:999px;
+  }
+
+  /* ---------- footer cta ---------- */
+  .footer-cta{
+    background:var(--ink);color:var(--bg);
+    border-radius:26px;padding:48px 32px;text-align:center;
+    display:grid;justify-items:center;gap:16px;
+    margin-block:20px 40px;
+  }
+  :root[data-theme="dark"] .footer-cta, :root:not([data-theme="light"]) .footer-cta{background:var(--paper-2);color:var(--ink)}
+  .footer-cta h2{font-family:'Nunito';font-weight:900;font-size:clamp(1.7rem,5vw,2.4rem);color:inherit}
+  .footer-cta p{color:color-mix(in srgb, var(--bg) 70%, transparent);max-width:36ch}
+  :root[data-theme="dark"] .footer-cta p, :root:not([data-theme="light"]) .footer-cta p{color:var(--ink-soft)}
+
+  footer{
+    padding-block:28px 40px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+    color:var(--ink-faint);font-size:.82rem;
+  }
+
+  @media (max-width:640px){
+    .rules{grid-template-columns:1fr}
+    .modes{grid-template-columns:1fr}
+    .features{grid-template-columns:1fr 1fr}
+    .showcase{grid-template-columns:1fr;justify-items:center;text-align:left}
+    .phone{width:200px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .btn, .cell, .connector{transition:none!important}
+  }
+</style>
+
+<div class="wrap">
+
+  <nav class="nav">
+    <div class="brand"><img src="icon.png" alt=""><span>Number Match</span></div>
+    <a class="store-mini" href="#get">Get the app</a>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <div class="chips" aria-hidden="true">
+        <div class="chip" style="color:var(--d4)">4</div>
+        <div class="chip" style="color:var(--d6)">6</div>
+        <div class="chip" style="color:var(--d3)">3</div>
+        <div class="chip" style="color:var(--d7)">7</div>
+      </div>
+      <h1 class="display">Number<br>Match</h1>
+      <p class="tag">Clear the board one pair at a time — match equal numbers, or numbers that add up to ten.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#get" id="heroCta">Get it on the App Store</a>
+        <a class="btn btn-ghost" href="#rules">See how it works</a>
+      </div>
+    </div>
+
+    <div class="demo-wrap">
+      <div class="demo-label">
+        <span class="demo-title">Try a pair</span>
+        <span class="demo-hint" id="demoHint">tap two numbers</span>
+      </div>
+      <div class="board" id="board" role="group" aria-label="Interactive number match demo"></div>
+    </div>
+  </section>
+
+  <section id="rules">
+    <div class="section-head">
+      <div class="eyebrow">The rules</div>
+      <h2 class="display">Everything clears in pairs</h2>
+      <p>A pair only clears when the two numbers can reach each other — in a row, a column, on a diagonal, or wrapping around to the next line. Anything already crossed out doesn't block the way.</p>
+    </div>
+    <div class="rules">
+      <div class="rule-card">
+        <div class="mini-grid">
+          <div class="mini-cell hi">7</div>
+          <span class="mini-link">＝</span>
+          <div class="mini-cell hi">7</div>
+        </div>
+        <h3>Equal numbers</h3>
+        <p>Two of the same digit connect — like 7 and 7.</p>
+      </div>
+      <div class="rule-card">
+        <div class="mini-grid">
+          <div class="mini-cell hi">6</div>
+          <span class="mini-link">+</span>
+          <div class="mini-cell hi">4</div>
+          <span class="mini-link">=10</span>
+        </div>
+        <h3>Adds to ten</h3>
+        <p>Or two digits that sum to ten — like 6 and 4.</p>
+      </div>
+      <div class="rule-card">
+        <div class="mini-grid">
+          <div class="mini-cell hi">5</div>
+          <div class="mini-cell" style="opacity:.35"></div>
+          <div class="mini-cell" style="opacity:.35"></div>
+          <div class="mini-cell hi">5</div>
+        </div>
+        <h3>Around the corner</h3>
+        <p>The last number of a row pairs with the first of the next.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="modes">
+    <div class="section-head">
+      <div class="eyebrow">Three ways to play</div>
+      <h2 class="display">Same rules, different boards</h2>
+      <p>All three modes follow the same rules above — what changes is the board you're given to start from.</p>
+    </div>
+    <div class="modes">
+      <div class="mode-card">
+        <div class="mode-icon" style="background:linear-gradient(135deg, color-mix(in srgb, var(--d2) 85%, white), var(--d2))">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15c-2 0-3.5-1.5-3.5-3S4 9 6 9c2.5 0 4 3 6 3s3.5-3 6-3c2 0 3.5 1.5 3.5 3S20 15 18 15c-2.5 0-4-3-6-3s-3.5 3-6 3z"/></svg>
+        </div>
+        <h3>Endless</h3>
+        <p>A new board every stage, tuned to the difficulty you choose — Basic, Medium or Hard. Clear one and the next deals, a little longer and a little meaner.</p>
+        <span class="mode-tag">★ stars every stage</span>
+      </div>
+      <div class="mode-card">
+        <div class="mode-icon" style="background:linear-gradient(135deg, color-mix(in srgb, var(--d1) 85%, white), var(--d1))">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+        </div>
+        <h3>Classic Board</h3>
+        <p>The pen-and-paper opening: 1 to 19, written a digit at a time. The same board every time, and a kind one to learn on.</p>
+      </div>
+      <div class="mode-card">
+        <div class="mode-icon" style="background:linear-gradient(135deg, color-mix(in srgb, var(--d7) 85%, white), var(--d7))">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/><circle cx="8" cy="14.5" r="1" fill="#fff" stroke="none"/><circle cx="12" cy="14.5" r="1" fill="#fff" stroke="none"/><circle cx="16" cy="14.5" r="1" fill="#fff" stroke="none"/></svg>
+        </div>
+        <h3>Daily Challenge</h3>
+        <p>One puzzle a day, identical for every player. Solve it to keep your streak going.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="section-head">
+      <div class="eyebrow">Built to feel right</div>
+      <h2 class="display">The small stuff, sorted</h2>
+    </div>
+    <div class="features">
+      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2.5l2.9 6.1 6.6.7-4.9 4.6 1.3 6.6L12 17.6 6.1 20.5l1.3-6.6-4.9-4.6 6.6-.7z"/></svg></div><h4>Stars &amp; rewards</h4><p>Clear stages, bank stars, spend them on hints when you're stuck.</p></div>
+      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M7 9a5 5 0 1110 0c0 2-1.2 3.1-2 4-.6.7-1 1.3-1 2H10c0-.7-.4-1.3-1-2-.8-.9-2-2-2-4z"/></svg></div><h4>Hints that help</h4><p>A few free ones per stage, more available when you need them.</p></div>
+      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7L3 11l4 4"/><path d="M3 11h11a6 6 0 010 12h-2"/></svg></div><h4>Undo &amp; add</h4><p>Step back a move, or copy remaining numbers down for more room.</p></div>
+      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 119.5 4a7 7 0 0010.5 10.5z"/></svg></div><h4>Light &amp; dark</h4><p>Matches your system automatically, or pick one yourself.</p></div>
+      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3c2.8 2.6 4.2 5.7 4.2 9s-1.4 6.4-4.2 9c-2.8-2.6-4.2-5.7-4.2-9s1.4-6.4 4.2-9z"/></svg></div><h4>20 languages</h4><p>Play in your own language, switch anytime from Settings.</p></div>
+      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9a13 13 0 0114 0M8 12.5a8.5 8.5 0 018 0M11 16a4 4 0 012 0"/><line x1="3" y1="3" x2="21" y2="21"/></svg></div><h4>No wifi needed</h4><p>Every board, every mode — entirely offline.</p></div>
+    </div>
+  </section>
+
+  <section id="showcase">
+    <div class="section-head">
+      <div class="eyebrow">See it in action</div>
+      <h2 class="display">One screen, no clutter</h2>
+    </div>
+    <div class="showcase">
+      <div class="phone"><img src="home.png" alt="Number Match home screen, showing difficulty tiers, the daily challenge, classic board and lifetime stats"></div>
+      <div class="showcase-list">
+        <div class="showcase-item"><div class="showcase-dot"></div><div><strong>Pick up where you left off</strong><p>Every tier remembers its own run — jump back in with one tap.</p></div></div>
+        <div class="showcase-item"><div class="showcase-dot"></div><div><strong>Your stats, always visible</strong><p>Best score, games won, and how far you've gotten — right on the home screen.</p></div></div>
+        <div class="showcase-item"><div class="showcase-dot"></div><div><strong>Nothing to configure</strong><p>Open it up and play — the whole game fits in one uncluttered screen.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="langs">
+    <div class="section-head">
+      <div class="eyebrow">Worldwide</div>
+      <h2 class="display">Play in your language</h2>
+    </div>
+    <div class="langs">
+      <span class="lang-pill">English</span><span class="lang-pill">Español</span><span class="lang-pill">Français</span>
+      <span class="lang-pill">Deutsch</span><span class="lang-pill">Português</span><span class="lang-pill">Italiano</span>
+      <span class="lang-pill">Nederlands</span><span class="lang-pill">Polski</span><span class="lang-pill">Русский</span>
+      <span class="lang-pill">Türkçe</span><span class="lang-pill">Tiếng Việt</span><span class="lang-pill">Bahasa Indonesia</span>
+      <span class="lang-pill">Bahasa Melayu</span><span class="lang-pill">العربية</span><span class="lang-pill">हिन्दी</span>
+      <span class="lang-pill">ไทย</span><span class="lang-pill">日本語</span><span class="lang-pill">한국어</span>
+      <span class="lang-pill">简体中文</span><span class="lang-pill">繁體中文</span>
+    </div>
+  </section>
+
+  <section id="get">
+    <div class="footer-cta">
+      <h2>Clear your first board today</h2>
+      <p>Free to play, no account needed. Endless, Classic and a new Daily Challenge every day.</p>
+      <a class="btn btn-primary" href="#get" style="margin-top:4px">Get it on the App Store</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>Number Match</span>
+    <span>Made for people who like their puzzles quiet.</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Board state mirrors the app's real icon at rest: 4 6 3 / 9 8 8 / 2 7 1
+  var values = [4,6,3, 9,8,8, 2,7,1];
+  var selected = [];
+  var boardEl = document.getElementById('board');
+  var hintEl = document.getElementById('demoHint');
+  var cells = [];
+  var busy = false;
+  var autoplayed = false;
+
+  function digitColor(v){ return 'var(--d'+v+')'; }
+
+  // `preview` is a purely visual highlight (used once, to open on the same two cells the
+  // real app icon shows selected) — kept separate from `selected`, the actual tap-driven
+  // state machine below, so the two never fight over what a cell's highlight means.
+  function render(preview){
+    boardEl.innerHTML = '';
+    var connector = document.createElement('div');
+    connector.className = 'connector';
+    connector.id = 'connector';
+    boardEl.appendChild(connector);
+    cells = values.map(function(v, i){
+      var cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.dataset.index = i;
+      cell.setAttribute('role', 'button');
+      cell.setAttribute('tabindex', v === null ? '-1' : '0');
+      cell.setAttribute('aria-label', v === null ? 'empty' : 'number ' + v);
+      if (v === null) { cell.dataset.empty = '1'; }
+      var num = document.createElement('div');
+      num.className = 'num';
+      num.textContent = v === null ? '' : v;
+      if (v !== null) num.style.color = digitColor(v);
+      cell.appendChild(num);
+      var spark = document.createElement('div');
+      spark.className = 'spark';
+      spark.textContent = '✓';
+      cell.appendChild(spark);
+      cell.addEventListener('click', function(){ onTap(i); });
+      cell.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onTap(i); }
+      });
+      boardEl.appendChild(cell);
+      return cell;
+    });
+    var highlighted = preview || selected;
+    highlighted.forEach(function(i){ cells[i].classList.add('selected'); });
+  }
+
+  function centerOf(i){
+    var r = cells[i].getBoundingClientRect();
+    var b = boardEl.getBoundingClientRect();
+    return { x: r.left - b.left + r.width/2, y: r.top - b.top + r.height/2 };
+  }
+
+  function drawConnector(a, b, cb){
+    var connector = document.getElementById('connector');
+    var p1 = centerOf(a), p2 = centerOf(b);
+    var dx = p2.x - p1.x, dy = p2.y - p1.y;
+    var len = Math.sqrt(dx*dx + dy*dy);
+    var angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    connector.style.transition = 'none';
+    connector.style.left = p1.x + 'px';
+    connector.style.top = (p1.y - 4.5) + 'px';
+    connector.style.transform = 'rotate(' + angle + 'deg)';
+    connector.style.width = '0px';
+    connector.style.opacity = '1';
+    if (reduceMotion) {
+      connector.style.width = len + 'px';
+      setTimeout(cb, 120);
+      return;
+    }
+    requestAnimationFrame(function(){
+      connector.classList.add('on');
+      requestAnimationFrame(function(){
+        connector.style.width = len + 'px';
+      });
+    });
+    setTimeout(function(){
+      connector.classList.remove('on');
+      connector.style.opacity = '0';
+      cb();
+    }, 260);
+  }
+
+  function refill(indices){
+    indices.forEach(function(i){
+      values[i] = 1 + Math.floor(Math.random() * 9);
+    });
+    render();
+  }
+
+  function onTap(i){
+    if (busy || values[i] === null) return;
+    if (selected.indexOf(i) !== -1) { selected = []; render(); return; }
+
+    if (selected.length === 0) {
+      selected = [i];
+      render();
+      hintEl.textContent = 'now tap its match';
+      return;
+    }
+
+    var first = selected[0];
+    var a = values[first], b = values[i];
+    var isMatch = (a === b) || (a + b === 10);
+    selected = [];
+
+    if (isMatch) {
+      busy = true;
+      hintEl.textContent = 'matched!';
+      drawConnector(first, i, function(){
+        cells[first].querySelector('.spark').style.opacity = '1';
+        cells[i].querySelector('.spark').style.opacity = '1';
+        cells[first].querySelector('.num').style.opacity = '0';
+        cells[i].querySelector('.num').style.opacity = '0';
+        setTimeout(function(){
+          values[first] = null; values[i] = null;
+          render();
+          setTimeout(function(){
+            refill([first, i]);
+            busy = false;
+            hintEl.textContent = 'tap two numbers';
+          }, 260);
+        }, 320);
+      });
+    } else {
+      cells[first].classList.add('shake');
+      cells[i].classList.add('shake');
+      hintEl.textContent = 'not quite — try again';
+      setTimeout(function(){
+        cells[first].classList.remove('shake');
+        cells[i].classList.remove('shake');
+        hintEl.textContent = 'tap two numbers';
+      }, 320);
+    }
+  }
+
+  // First paint mirrors the shipped app icon exactly: 4 6 3 / 9 8 8 / 2 7 1, with the two
+  // center 8s already highlighted — nothing here depends on JS running to be legible.
+  render([4, 5]);
+
+  // A one-time, gentle demo of that same pair actually matching, so a visitor who never
+  // taps still sees the mechanic play out once. Skipped under reduced motion, in which case
+  // the static preview above is where the board stays until someone taps it.
+  if (!reduceMotion) {
+    setTimeout(function(){
+      if (autoplayed) return;
+      autoplayed = true;
+      render();
+      onTap(4);
+      setTimeout(function(){ onTap(5); }, 260);
+    }, 1400);
+  }
+})();
+</script>
+
+</body></html>
