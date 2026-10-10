@@ -1,430 +1,402 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Number Match</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Inkten — A puzzle book of numbers</title>
+<meta name="description" content="Inkten is a book of handmade number puzzles: pair numbers, cross them out in red ink, and beat par on every page. Chapters 1 and 2 are free.">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#EEF1F7;
-    --paper:#FFFFFF;
-    --paper-2:#F6F8FC;
+    --paper:#FBF6EA;
+    --card:#FFFFFF;
     --ink:#1D2636;
     --ink-soft:#6B778C;
     --ink-faint:#A4ADBF;
-    --line:#DDE2EB;
-    --border:#9DA4BB;
+    --line:#E1E6F0;
+    --rule:#CFDDEF;
+    --rule-border:#A7BBD8;
+    --pen:#1F2A44;
+    --pen-alt:#2E62C2;
+    --ghost:#C2C3C4;
+    --red:#E2553D;
+    --highlight:#FFE37A;
     --accent:#3E7BFA;
     --accent-ink:#FFFFFF;
-    --accent-soft:#A9DAFF;
-    --accent-soft-bg:#DCEEFF;
-    --gold:#B8860B;
+    --gold:#F2B705;
     --gold-bg:#FBEBC7;
-    --success:#1F9E6E;
-    --danger:#B03A3A;
-    --d1:#2F6FED; --d2:#1F9E6E; --d3:#C45C1C; --d4:#8B4CC8; --d5:#C03A6B;
-    --d6:#0E8A9A; --d7:#9A6A10; --d8:#4A5AD6; --d9:#B03A3A;
-    --shadow-1: 0 1px 2px rgba(29,38,54,.04), 0 8px 24px rgba(29,38,54,.06);
-    --shadow-2: 0 18px 40px rgba(29,38,54,.10);
-    color-scheme: light;
+    --c1:#2F6FED; --c2:#1F9E6E; --c3:#C45C1C; --c4:#8B4CC8; --c5:#C03A6B;
+    --shadow-1:0 1px 2px rgba(29,38,54,.04),0 8px 24px rgba(29,38,54,.06);
+    --shadow-2:0 18px 40px rgba(29,38,54,.10);
+    color-scheme:light;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#0E1118; --paper:#181D26; --paper-2:#1B212E;
+      --bg:#0E1118; --paper:#1A2130; --card:#181D26;
       --ink:#F2F5FB; --ink-soft:#939EB4; --ink-faint:#5B6479;
-      --line:#2C3444; --border:#39445A;
-      --accent:#5B8CFF; --accent-ink:#0E1118; --accent-soft:#1E4678; --accent-soft-bg:#16314F;
-      --gold:#FFD23D; --gold-bg:#3A3013; --success:#3DD68C; --danger:#FF6F63;
-      --d1:#6E9EFF; --d2:#4BD09B; --d3:#F29A5B; --d4:#B98CF0; --d5:#F07AA8;
-      --d6:#4AC6D6; --d7:#E0B04A; --d8:#8B98FF; --d9:#FF7E7E;
-      --shadow-1: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
-      --shadow-2: 0 18px 40px rgba(0,0,0,.45);
-      color-scheme: dark;
+      --line:#2C3546; --rule:#2D3A52; --rule-border:#3C4C68;
+      --pen:#E6ECF7; --pen-alt:#8FB6F4; --ghost:#455066;
+      --red:#FF7A66; --highlight:#6A561A;
+      --accent:#5B8CFF; --accent-ink:#0E1118;
+      --gold:#FFD23D; --gold-bg:#3A3013;
+      --c1:#6E9EFF; --c2:#4BD09B; --c3:#F29A5B; --c4:#B98CF0; --c5:#F07AA8;
+      --shadow-1:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+      --shadow-2:0 18px 40px rgba(0,0,0,.45);
+      color-scheme:dark;
     }
   }
   :root[data-theme="dark"]{
-    --bg:#0E1118; --paper:#181D26; --paper-2:#1B212E;
+    --bg:#0E1118; --paper:#1A2130; --card:#181D26;
     --ink:#F2F5FB; --ink-soft:#939EB4; --ink-faint:#5B6479;
-    --line:#2C3444; --border:#39445A;
-    --accent:#5B8CFF; --accent-ink:#0E1118; --accent-soft:#1E4678; --accent-soft-bg:#16314F;
-    --gold:#FFD23D; --gold-bg:#3A3013; --success:#3DD68C; --danger:#FF6F63;
-    --d1:#6E9EFF; --d2:#4BD09B; --d3:#F29A5B; --d4:#B98CF0; --d5:#F07AA8;
-    --d6:#4AC6D6; --d7:#E0B04A; --d8:#8B98FF; --d9:#FF7E7E;
-    --shadow-1: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
-    --shadow-2: 0 18px 40px rgba(0,0,0,.45);
-    color-scheme: dark;
+    --line:#2C3546; --rule:#2D3A52; --rule-border:#3C4C68;
+    --pen:#E6ECF7; --pen-alt:#8FB6F4; --ghost:#455066;
+    --red:#FF7A66; --highlight:#6A561A;
+    --accent:#5B8CFF; --accent-ink:#0E1118;
+    --gold:#FFD23D; --gold-bg:#3A3013;
+    --c1:#6E9EFF; --c2:#4BD09B; --c3:#F29A5B; --c4:#B98CF0; --c5:#F07AA8;
+    --shadow-1:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+    --shadow-2:0 18px 40px rgba(0,0,0,.45);
+    color-scheme:dark;
   }
 
   *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    padding-inline:20px;
+    margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.5 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    padding-inline:16px;
+    padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
     -webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:760px;margin:0 auto}
-  .display{font-family:'Nunito',-apple-system,sans-serif;font-weight:900;letter-spacing:-.01em}
-  h1,h2,h3{text-wrap:balance;margin:0}
+  .wrap{max-width:820px;margin:0 auto}
+  h1,h2,h3,h4{margin:0;text-wrap:balance}
   p{margin:0}
   a{color:inherit}
   img{max-width:100%;display:block}
+  .display{font-family:'Nunito',-apple-system,sans-serif;font-weight:900;letter-spacing:-.01em}
+  .hand{font-family:'Patrick Hand','Comic Sans MS',cursive}
+  .eyebrow{font-weight:700;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
 
-  /* ---------- nav ---------- */
-  .nav{
-    display:flex;align-items:center;justify-content:space-between;
-    padding-block:22px;
+  /* nav */
+  .nav{display:flex;align-items:center;justify-content:space-between;padding-block:22px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Nunito';font-weight:900;font-size:1.1rem;text-decoration:none}
+  .brand img{width:32px;height:32px;border-radius:8px;box-shadow:var(--shadow-1)}
+  .store-mini{
+    font-family:'Nunito';font-weight:800;font-size:.85rem;text-decoration:none;
+    background:var(--accent);color:var(--accent-ink);padding:9px 18px;border-radius:999px;
   }
-  .brand{display:flex;align-items:center;gap:10px;font-family:'Nunito';font-weight:900;font-size:1.05rem}
-  .brand img{width:30px;height:30px;border-radius:8px;box-shadow:var(--shadow-1)}
-  .nav a.store-mini{
-    font-family:'Nunito';font-weight:800;font-size:.85rem;
-    background:var(--accent);color:var(--accent-ink);
-    padding:9px 18px;border-radius:999px;text-decoration:none;
-    box-shadow:0 6px 18px color-mix(in srgb, var(--accent) 45%, transparent);
-    transition:transform .15s ease;
-  }
-  .nav a.store-mini:hover{transform:translateY(-1px)}
 
-  /* ---------- hero ---------- */
-  .hero{
-    padding-block:28px 56px;
-    display:grid;
-    gap:34px;
-  }
-  .eyebrow{
-    font-family:'Inter';font-weight:700;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--ink-soft);
-  }
-  .chips{display:flex;gap:8px;margin-bottom:18px}
-  .chip{
-    width:52px;height:52px;border-radius:14px;background:var(--paper);
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Nunito';font-weight:900;font-size:1.4rem;
-    box-shadow:var(--shadow-1);
-  }
-  .hero h1{font-size:clamp(2.6rem,9vw,4.6rem);line-height:.98}
-  .hero .tag{
-    margin-top:16px;font-size:clamp(1.05rem,2.6vw,1.25rem);color:var(--ink-soft);
-    max-width:34ch;font-weight:500;
-  }
+  /* buttons */
   .cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
   .btn{
-    font-family:'Nunito';font-weight:800;font-size:1rem;
-    padding:15px 26px;border-radius:999px;border:none;cursor:pointer;
-    text-decoration:none;display:inline-flex;align-items:center;gap:8px;
-    transition:transform .15s ease, box-shadow .15s ease;
+    font-family:'Nunito';font-weight:800;font-size:1rem;text-decoration:none;
+    padding:15px 26px;border-radius:999px;display:inline-flex;align-items:center;gap:8px;
+    transition:transform .15s ease;
   }
-  .btn:focus-visible{outline:3px solid var(--accent-soft);outline-offset:2px}
-  .btn-primary{
-    background:var(--accent);color:var(--accent-ink);
-    box-shadow:0 10px 26px color-mix(in srgb, var(--accent) 40%, transparent);
-  }
+  .btn:focus-visible,.cell:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 10px 26px color-mix(in srgb,var(--accent) 40%,transparent)}
   .btn-primary:hover{transform:translateY(-2px)}
-  .btn-ghost{
-    background:transparent;color:var(--ink);border:1.5px solid var(--border);
-  }
+  .btn-ghost{color:var(--ink);border:1.5px solid var(--rule-border)}
   .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
 
-  /* ---------- demo board ---------- */
-  .demo-wrap{
-    background:var(--paper);border-radius:22px;padding:26px;
-    box-shadow:var(--shadow-2);border:1px solid var(--line);
-    display:grid;gap:16px;justify-items:center;
-    position:relative;
+  /* hero */
+  .hero{display:grid;gap:34px;padding-block:24px 48px}
+  .hero h1{font-size:clamp(2.5rem,8.5vw,4.4rem);line-height:1;margin-top:12px}
+  .hero h1 .strike{position:relative;white-space:nowrap}
+  .hero h1 .strike::after{
+    content:"";position:absolute;left:-4%;right:-4%;top:52%;height:.12em;border-radius:99px;
+    background:var(--red);transform:rotate(-6deg);
   }
-  .demo-label{
-    display:flex;align-items:center;justify-content:space-between;width:100%;
+  .hero .tag{margin-top:16px;font-size:clamp(1.05rem,2.6vw,1.22rem);color:var(--ink-soft);max-width:36ch;font-weight:500}
+
+  /* notebook demo */
+  .notebook{
+    background:var(--card);border-radius:22px;padding:18px;box-shadow:var(--shadow-2);
+    border:1px solid var(--line);
   }
-  .demo-title{font-family:'Nunito';font-weight:800;font-size:.95rem;color:var(--ink)}
-  .demo-hint{font-size:.78rem;color:var(--ink-faint);font-weight:500}
+  .nb-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:2px 4px 12px;flex-wrap:wrap}
+  .nb-title{font-family:'Nunito';font-weight:800}
+  .nb-status{font-size:.85rem;color:var(--ink-soft)}
   .board{
-    position:relative;
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    width:min(300px,74vw);
-    aspect-ratio:1;
-    background:var(--paper-2);
-    border:1.5px solid var(--border);
-    border-radius:8px;
-    overflow:hidden;
+    display:grid;grid-template-columns:repeat(7,1fr);
+    background:var(--paper);border:1.5px solid var(--rule-border);border-radius:6px;overflow:hidden;
   }
   .cell{
-    position:relative;
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Nunito';font-weight:800;font-size:clamp(1.6rem,7vw,2.1rem);
-    color:var(--ink);
-    background:var(--paper);
-    border-right:1px solid var(--line);
-    border-bottom:1px solid var(--line);
-    cursor:pointer;
-    user-select:none;
-    -webkit-tap-highlight-color:transparent;
-    transition:background-color .18s ease;
+    position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+    border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
+    font-family:'Patrick Hand',cursive;font-size:clamp(1.5rem,6.4vw,2.3rem);color:var(--pen);
+    background:transparent;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;
+    padding:0;border-top:0;border-left:0;
   }
-  .board .cell:nth-child(3n){border-right:none}
-  .board .cell:nth-child(n+7){border-bottom:none}
-  .cell[data-empty="1"]{cursor:default}
-  .cell.selected{background:var(--accent-soft-bg)}
-  .cell:focus-visible{outline:3px solid var(--accent);outline-offset:-3px;z-index:1}
+  .cell:nth-child(7n){border-right:none}
+  .cell.row-last{border-bottom:none}
+  .cell.alt{color:var(--pen-alt)}
+  .cell.selected{background:var(--highlight)}
+  .cell.hint{background:color-mix(in srgb,var(--gold) 35%,transparent)}
+  .cell.done{color:var(--ghost);cursor:default}
+  .cell svg{position:absolute;inset:18% 16%;width:68%;height:64%;overflow:visible;pointer-events:none}
+  .cell svg path{stroke:var(--red);stroke-width:7;stroke-linecap:round;fill:none;stroke-dasharray:120;stroke-dashoffset:0;animation:draw .25s ease-out}
+  @keyframes draw{from{stroke-dashoffset:120}}
   .cell.shake{animation:shake .32s ease}
-  .cell .num{transition:opacity .15s ease, transform .15s ease}
-  .cell[data-empty="1"] .num{opacity:0}
-  .cell .spark{
-    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    font-size:1.1rem;opacity:0;color:var(--success);
+  @keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+  .nb-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 4px 2px;flex-wrap:wrap}
+  .nb-rule{font-size:.85rem;color:var(--ink-soft)}
+  .nb-actions{display:flex;gap:8px}
+  .chip-btn{
+    font:700 .82rem 'Inter',sans-serif;color:var(--ink);background:var(--bg);border:1px solid var(--line);
+    padding:7px 13px;border-radius:999px;cursor:pointer;
   }
-  @keyframes shake{
-    0%,100%{transform:translateX(0)}
-    25%{transform:translateX(-4px)}
-    75%{transform:translateX(4px)}
-  }
-  .connector{
-    position:absolute;height:9px;border-radius:999px;background:var(--accent);
-    transform-origin:left center;left:0;top:0;
-    width:0;opacity:0;pointer-events:none;
-    box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
-  }
-  .connector.on{transition:width .22s cubic-bezier(.2,.8,.3,1)}
+  .chip-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .stars{color:var(--gold);letter-spacing:2px}
 
-  /* ---------- section shell ---------- */
-  section{padding-block:52px}
-  .section-head{max-width:46ch;margin-bottom:30px}
-  .section-head .eyebrow{margin-bottom:10px}
-  .section-head h2{font-size:clamp(1.6rem,4.4vw,2.2rem)}
+  /* sections */
+  section{padding-block:48px}
+  .section-head{max-width:48ch;margin-bottom:28px}
+  .section-head h2{font-size:clamp(1.6rem,4.4vw,2.2rem);margin-top:8px}
   .section-head p{color:var(--ink-soft);margin-top:10px;font-size:1.02rem;line-height:1.6}
+  .grid3{display:grid;gap:14px;grid-template-columns:repeat(3,1fr)}
+  .card{background:var(--card);border-radius:18px;padding:20px;box-shadow:var(--shadow-1);border:1px solid var(--line)}
+  .card h3{font-family:'Nunito';font-weight:800;font-size:1.05rem}
+  .card p{font-size:.9rem;color:var(--ink-soft);margin-top:6px;line-height:1.55}
 
-  /* ---------- rules ---------- */
-  .rules{display:grid;gap:14px;grid-template-columns:repeat(3,1fr)}
-  .rule-card{
-    background:var(--paper);border-radius:18px;padding:20px 18px;
-    box-shadow:var(--shadow-1);border:1px solid var(--line);
-    display:grid;gap:14px;justify-items:center;text-align:center;
+  /* rule cards */
+  .mini{display:flex;gap:6px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+  .mini span{
+    width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+    background:var(--paper);border:1px solid var(--rule-border);
+    font-family:'Patrick Hand',cursive;font-size:1.5rem;color:var(--pen);
   }
-  .mini-grid{display:flex;gap:4px;align-items:center}
-  .mini-cell{
-    width:38px;height:38px;border-radius:0;background:var(--paper-2);
-    border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
-    font-family:'Nunito';font-weight:800;font-size:1.05rem;
-  }
-  .mini-cell.hi{background:var(--accent-soft-bg);color:var(--accent)}
-  .mini-link{color:var(--ink-faint);font-size:.85rem}
-  .rule-card h3{font-family:'Nunito';font-weight:800;font-size:1rem}
-  .rule-card p{font-size:.86rem;color:var(--ink-soft);line-height:1.5}
+  .mini span.x{color:var(--ghost);position:relative}
+  .mini span.x::after{content:"";position:absolute;left:14%;right:14%;top:50%;height:3px;border-radius:9px;background:var(--red);transform:rotate(-28deg)}
+  .mini span.blank{background:transparent;border-color:transparent;width:auto;font-family:'Inter';font-size:.95rem;color:var(--ink-faint)}
 
-  /* ---------- modes ---------- */
-  .modes{display:grid;gap:16px;grid-template-columns:repeat(3,1fr)}
-  .mode-card{
-    background:var(--paper);border-radius:20px;padding:24px 20px;
-    box-shadow:var(--shadow-1);border:1px solid var(--line);
-    display:grid;gap:12px;
+  /* chapters */
+  .chapters{display:grid;gap:12px}
+  .chapter{display:flex;gap:16px;align-items:center}
+  .badge{
+    flex:none;width:52px;height:52px;border-radius:14px;color:#fff;
+    display:flex;align-items:center;justify-content:center;
   }
-  .mode-icon{
-    width:52px;height:52px;border-radius:15px;
-    display:flex;align-items:center;justify-content:center;color:#fff;
-  }
-  .mode-card h3{font-family:'Nunito';font-weight:800;font-size:1.12rem}
-  .mode-card p{font-size:.9rem;color:var(--ink-soft);line-height:1.55}
-  .mode-tag{
-    justify-self:start;font-size:.74rem;font-weight:700;color:var(--gold);
-    background:var(--gold-bg);padding:5px 11px;border-radius:999px;
-  }
+  .badge svg{width:26px;height:26px}
+  .chapter h3{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .pill{font:700 .7rem 'Inter',sans-serif;padding:4px 9px;border-radius:999px;background:var(--bg);color:var(--ink-soft);letter-spacing:.02em}
+  .pill.free{background:color-mix(in srgb,var(--c2) 18%,transparent);color:var(--c2)}
 
-  /* ---------- features ---------- */
-  .features{display:grid;gap:12px;grid-template-columns:repeat(3,1fr)}
-  .feature{
-    padding:18px;border-radius:16px;background:var(--paper-2);
-    display:grid;gap:8px;border:1px solid var(--line);
-  }
-  .feature .ic{color:var(--accent)}
-  .feature h4{font-family:'Nunito';font-weight:800;font-size:.92rem}
-  .feature p{font-size:.82rem;color:var(--ink-soft);line-height:1.5}
+  /* par */
+  .par{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center}
+  .par-card{text-align:center;padding:28px 20px}
+  .par-stars{font-size:2.6rem;color:var(--gold);letter-spacing:6px;line-height:1}
+  .par-stars .off{color:var(--line)}
+  .par-row{display:flex;justify-content:center;gap:0;margin-top:18px;background:var(--bg);border-radius:14px;padding:10px 0}
+  .par-row div{flex:1;border-right:1px solid var(--line)}
+  .par-row div:last-child{border:none}
+  .par-row b{display:block;font-family:'Nunito';font-size:1.3rem}
+  .par-row small{color:var(--ink-soft);font-size:.72rem}
+  .goals{display:grid;gap:10px;list-style:none;margin:0;padding:0}
+  .goals li{display:flex;gap:12px;align-items:flex-start}
+  .goals li::before{content:"";flex:none;width:9px;height:9px;border-radius:50%;background:var(--red);margin-top:7px}
+  .goals strong{font-family:'Nunito';font-weight:800}
+  .goals p{color:var(--ink-soft);font-size:.9rem}
 
-  /* ---------- showcase ---------- */
-  .showcase{
-    display:grid;grid-template-columns:220px 1fr;gap:40px;align-items:center;
-  }
-  .phone{
-    border-radius:34px;padding:8px;background:var(--ink);
-    box-shadow:var(--shadow-2);
-  }
-  .phone img{border-radius:26px;display:block}
-  .showcase-list{display:grid;gap:16px}
-  .showcase-item{display:flex;gap:12px;align-items:flex-start}
-  .showcase-dot{
-    width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:8px;flex:none;
-  }
-  .showcase-item strong{font-family:'Nunito';font-weight:800;font-size:.98rem}
-  .showcase-item p{font-size:.88rem;color:var(--ink-soft);margin-top:3px;line-height:1.5}
+  /* showcase */
+  .showcase{display:grid;grid-template-columns:240px 1fr;gap:40px;align-items:center}
+  .phone{border-radius:38px;padding:8px;background:#141821;box-shadow:var(--shadow-2)}
+  .phone img{border-radius:30px;width:100%}
 
-  /* ---------- languages strip ---------- */
-  .langs{
-    display:flex;flex-wrap:wrap;gap:9px;
-  }
-  .lang-pill{
-    font-size:.82rem;font-weight:600;color:var(--ink-soft);
-    background:var(--paper);border:1px solid var(--line);
-    padding:7px 13px;border-radius:999px;
-  }
+  /* features */
+  .feature .ic{color:var(--accent);margin-bottom:8px}
+  .feature h4{font-family:'Nunito';font-weight:800;font-size:.95rem}
+  .feature p{font-size:.85rem;color:var(--ink-soft);margin-top:4px}
 
-  /* ---------- footer cta ---------- */
+  .langs{display:flex;flex-wrap:wrap;gap:9px}
+  .lang-pill{font-size:.84rem;font-weight:600;color:var(--ink-soft);background:var(--card);border:1px solid var(--line);padding:7px 13px;border-radius:999px}
+
   .footer-cta{
-    background:var(--ink);color:var(--bg);
-    border-radius:26px;padding:48px 32px;text-align:center;
-    display:grid;justify-items:center;gap:16px;
-    margin-block:20px 40px;
+    background:var(--paper);border:1.5px solid var(--rule-border);border-radius:26px;
+    padding:44px 28px;text-align:center;display:grid;justify-items:center;gap:14px;
+    background-image:linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);
+    background-size:34px 34px;
   }
-  :root[data-theme="dark"] .footer-cta, :root:not([data-theme="light"]) .footer-cta{background:var(--paper-2);color:var(--ink)}
-  .footer-cta h2{font-family:'Nunito';font-weight:900;font-size:clamp(1.7rem,5vw,2.4rem);color:inherit}
-  .footer-cta p{color:color-mix(in srgb, var(--bg) 70%, transparent);max-width:36ch}
-  :root[data-theme="dark"] .footer-cta p, :root:not([data-theme="light"]) .footer-cta p{color:var(--ink-soft)}
+  .footer-cta h2{font-size:clamp(1.7rem,5vw,2.4rem)}
+  .footer-cta p{color:var(--ink-soft);max-width:38ch}
 
-  footer{
-    padding-block:28px 40px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
-    color:var(--ink-faint);font-size:.82rem;
-  }
+  .fine{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+  .fine h3{font-family:'Nunito';font-weight:800;font-size:1.05rem;margin-bottom:6px}
+  .fine p,.fine li{color:var(--ink-soft);font-size:.9rem;line-height:1.6}
+  .fine ul{margin:6px 0 0;padding-left:18px}
 
-  @media (max-width:640px){
-    .rules{grid-template-columns:1fr}
-    .modes{grid-template-columns:1fr}
-    .features{grid-template-columns:1fr 1fr}
-    .showcase{grid-template-columns:1fr;justify-items:center;text-align:left}
-    .phone{width:200px}
+  footer{padding-block:28px 40px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--ink-faint);font-size:.82rem}
+
+  @media (max-width:700px){
+    .grid3,.par,.fine{grid-template-columns:1fr}
+    .showcase{grid-template-columns:1fr;justify-items:center}
+    .phone{width:220px}
   }
   @media (prefers-reduced-motion: reduce){
-    .btn, .cell, .connector{transition:none!important}
+    html{scroll-behavior:auto}
+    .btn,.cell{transition:none!important;animation:none!important}
+    .cell svg path{animation:none}
   }
 </style>
-
+</head>
+<body>
 <div class="wrap">
 
   <nav class="nav">
-    <div class="brand"><img src="icon.png" alt=""><span>Number Match</span></div>
+    <a class="brand" href="#top" aria-label="Inkten"><img src="icon.png" alt=""><span>Inkten</span></a>
     <a class="store-mini" href="#get">Get the app</a>
   </nav>
 
-  <section class="hero">
+  <section class="hero" id="top">
     <div>
-      <div class="chips" aria-hidden="true">
-        <div class="chip" style="color:var(--d4)">4</div>
-        <div class="chip" style="color:var(--d6)">6</div>
-        <div class="chip" style="color:var(--d3)">3</div>
-        <div class="chip" style="color:var(--d7)">7</div>
-      </div>
-      <h1 class="display">Number<br>Match</h1>
-      <p class="tag">Clear the board one pair at a time — match equal numbers, or numbers that add up to ten.</p>
+      <div class="eyebrow">A puzzle book of numbers</div>
+      <h1 class="display">Cross it out, <span class="strike">like</span> on paper.</h1>
+      <p class="tag">Handmade pages of number pairs, a new rule in every chapter, and a par to beat on every page.</p>
       <div class="cta-row">
-        <a class="btn btn-primary" href="#get" id="heroCta">Get it on the App Store</a>
-        <a class="btn btn-ghost" href="#rules">See how it works</a>
+        <a class="btn btn-primary" href="#get">Get it on the App Store</a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
       </div>
     </div>
 
-    <div class="demo-wrap">
-      <div class="demo-label">
-        <span class="demo-title">Try a pair</span>
-        <span class="demo-hint" id="demoHint">tap two numbers</span>
+    <div class="notebook" aria-labelledby="demoTitle">
+      <div class="nb-head">
+        <span class="nb-title" id="demoTitle">Page 1-01 · Clear the page</span>
+        <span class="nb-status" id="status" aria-live="polite">Moves: 0 · Par 7</span>
       </div>
-      <div class="board" id="board" role="group" aria-label="Interactive number match demo"></div>
-    </div>
-  </section>
-
-  <section id="rules">
-    <div class="section-head">
-      <div class="eyebrow">The rules</div>
-      <h2 class="display">Everything clears in pairs</h2>
-      <p>A pair only clears when the two numbers can reach each other — in a row, a column, on a diagonal, or wrapping around to the next line. Anything already crossed out doesn't block the way.</p>
-    </div>
-    <div class="rules">
-      <div class="rule-card">
-        <div class="mini-grid">
-          <div class="mini-cell hi">7</div>
-          <span class="mini-link">＝</span>
-          <div class="mini-cell hi">7</div>
-        </div>
-        <h3>Equal numbers</h3>
-        <p>Two of the same digit connect — like 7 and 7.</p>
-      </div>
-      <div class="rule-card">
-        <div class="mini-grid">
-          <div class="mini-cell hi">6</div>
-          <span class="mini-link">+</span>
-          <div class="mini-cell hi">4</div>
-          <span class="mini-link">=10</span>
-        </div>
-        <h3>Adds to ten</h3>
-        <p>Or two digits that sum to ten — like 6 and 4.</p>
-      </div>
-      <div class="rule-card">
-        <div class="mini-grid">
-          <div class="mini-cell hi">5</div>
-          <div class="mini-cell" style="opacity:.35"></div>
-          <div class="mini-cell" style="opacity:.35"></div>
-          <div class="mini-cell hi">5</div>
-        </div>
-        <h3>Around the corner</h3>
-        <p>The last number of a row pairs with the first of the next.</p>
+      <div class="board" id="board" role="group" aria-label="Playable page: tap two numbers that pair"></div>
+      <div class="nb-foot">
+        <span class="nb-rule">Pair equal numbers, or two that add up to 10.</span>
+        <span class="nb-actions">
+          <button class="chip-btn" type="button" id="hintBtn">Hint</button>
+          <button class="chip-btn" type="button" id="resetBtn">Start over</button>
+        </span>
       </div>
     </div>
   </section>
 
-  <section id="modes">
+  <section id="how">
     <div class="section-head">
-      <div class="eyebrow">Three ways to play</div>
-      <h2 class="display">Same rules, different boards</h2>
-      <p>All three modes follow the same rules above — what changes is the board you're given to start from.</p>
+      <div class="eyebrow">How it works</div>
+      <h2 class="display">Two numbers, one stroke of the pen</h2>
+      <p>Tap two numbers that pair and they're crossed out in red. Crossed-out numbers stay on the page, but they never get in the way.</p>
     </div>
-    <div class="modes">
-      <div class="mode-card">
-        <div class="mode-icon" style="background:linear-gradient(135deg, color-mix(in srgb, var(--d2) 85%, white), var(--d2))">
-          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15c-2 0-3.5-1.5-3.5-3S4 9 6 9c2.5 0 4 3 6 3s3.5-3 6-3c2 0 3.5 1.5 3.5 3S20 15 18 15c-2.5 0-4-3-6-3s-3.5 3-6 3z"/></svg>
-        </div>
-        <h3>Endless</h3>
-        <p>A new board every stage, tuned to the difficulty you choose — Basic, Medium or Hard. Clear one and the next deals, a little longer and a little meaner.</p>
-        <span class="mode-tag">★ stars every stage</span>
+    <div class="grid3">
+      <div class="card">
+        <div class="mini" aria-hidden="true"><span>7</span><span>7</span><span class="blank">or</span><span>6</span><span>4</span></div>
+        <h3>Equal, or make ten</h3>
+        <p>Two of the same number, or two that add up to 10. Later chapters change the rule.</p>
       </div>
-      <div class="mode-card">
-        <div class="mode-icon" style="background:linear-gradient(135deg, color-mix(in srgb, var(--d1) 85%, white), var(--d1))">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
-        </div>
-        <h3>Classic Board</h3>
-        <p>The pen-and-paper opening: 1 to 19, written a digit at a time. The same board every time, and a kind one to learn on.</p>
+      <div class="card">
+        <div class="mini" aria-hidden="true"><span>5</span><span class="x">2</span><span class="x">8</span><span>5</span></div>
+        <h3>A clear line between</h3>
+        <p>Side by side, above and below, on a diagonal, or from the end of one line to the start of the next.</p>
       </div>
-      <div class="mode-card">
-        <div class="mode-icon" style="background:linear-gradient(135deg, color-mix(in srgb, var(--d7) 85%, white), var(--d7))">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/><circle cx="8" cy="14.5" r="1" fill="#fff" stroke="none"/><circle cx="12" cy="14.5" r="1" fill="#fff" stroke="none"/><circle cx="16" cy="14.5" r="1" fill="#fff" stroke="none"/></svg>
+      <div class="card">
+        <div class="mini" aria-hidden="true"><span>3</span><span>9</span><span class="blank">→ +</span></div>
+        <h3>Out of moves? Tap +</h3>
+        <p>The numbers left are copied onto the end of the page, if the page allows another add.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="chapters">
+    <div class="section-head">
+      <div class="eyebrow">Five chapters, 49 pages</div>
+      <h2 class="display">A new rule in every chapter</h2>
+      <p>Each chapter changes one thing about how the game works. Every page is a fixed board, designed by hand and proven solvable.</p>
+    </div>
+    <div class="chapters">
+      <div class="card chapter">
+        <div class="badge" style="background:var(--c1)" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 5H7l6 7-6 7h10"/></svg>
         </div>
-        <h3>Daily Challenge</h3>
-        <p>One puzzle a day, identical for every player. Solve it to keep your streak going.</p>
+        <div><h3>Make Ten <span class="pill free">Free</span></h3><p>Equal numbers, or two that add up to 10. The game as it's played on paper.</p></div>
+      </div>
+      <div class="card chapter">
+        <div class="badge" style="background:var(--c2)" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2.5c3.6 4.6 6.5 8.2 6.5 11.7A6.5 6.5 0 0 1 5.5 14.2C5.5 10.7 8.4 7.1 12 2.5z"/></svg>
+        </div>
+        <div><h3>Ink Blots <span class="pill free">Free</span></h3><p>Blots block the way until your matches dry them. Plan around them.</p></div>
+      </div>
+      <div class="card chapter">
+        <div class="badge" style="background:var(--c3)" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5" fill="#fff" fill-opacity=".18"/><path d="M12 7v5l3.5 2"/></svg>
+        </div>
+        <div><h3>Make Twelve <span class="pill">Full version</span></h3><p>Now pairs must add up to 12. Old habits stop working.</p></div>
+      </div>
+      <div class="card chapter">
+        <div class="badge" style="background:var(--c4)" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/></svg>
+        </div>
+        <div><h3>Five Apart <span class="pill">Full version</span></h3><p>Pair numbers that differ by 5: 1 and 6, 2 and 7, 3 and 8, 4 and 9.</p></div>
+      </div>
+      <div class="card chapter">
+        <div class="badge" style="background:var(--c5)" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h11a2 2 0 0 1 2 2v1H9"/><path d="M9 7v11a2 2 0 0 1-4 0v-2h2"/><path d="M9 18a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7"/><path d="M12.5 11h5M12.5 14.5h5"/></svg>
+        </div>
+        <div><h3>The Classic Page <span class="pill">Full version</span></h3><p>The paper game's original 1–19 opening, as one last page.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="par">
+    <div class="section-head">
+      <div class="eyebrow">Every page has a par</div>
+      <h2 class="display">One goal per page, three stars to earn</h2>
+      <p>Par is the fewest moves the page can be won in. Meet the goal for a star, and match par for three.</p>
+    </div>
+    <div class="par">
+      <div class="card par-card">
+        <div class="par-stars" aria-label="3 of 3 stars">★★★</div>
+        <div class="par-row">
+          <div><b>14</b><small>Moves</small></div>
+          <div><b>14</b><small>Par</small></div>
+          <div><b>1</b><small>Adds used</small></div>
+        </div>
+      </div>
+      <ul class="goals">
+        <li><div><strong>Clear the page</strong><p>Cross out every number, within the page's adds.</p></div></li>
+        <li><div><strong>Cross out every 7</strong><p>Only one digit has to go; the rest may stay.</p></div></li>
+        <li><div><strong>Clear within the move limit</strong><p>No room for a wasted pair.</p></div></li>
+        <li><div><strong>Clear without +</strong><p>Every page has an answer. Find it without adding.</p></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="showcase">
+    <div class="showcase">
+      <div class="phone"><img src="home.png" alt="Inkten home screen: a Continue card for the next page, then the five chapters with pages cleared and stars earned" width="257" height="560"></div>
+      <div>
+        <div class="section-head" style="margin-bottom:18px">
+          <div class="eyebrow">Your notebook</div>
+          <h2 class="display">Pick up the next page in one tap</h2>
+        </div>
+        <ul class="goals">
+          <li><div><strong>Continue where you stopped</strong><p>A page left half-done waits for you, and the next new page is always one tap away.</p></div></li>
+          <li><div><strong>See your progress</strong><p>Pages cleared and stars earned for every chapter, right on the home screen.</p></div></li>
+          <li><div><strong>Replay for three stars</strong><p>Your best result on each page is kept.</p></div></li>
+        </ul>
       </div>
     </div>
   </section>
 
   <section id="features">
     <div class="section-head">
-      <div class="eyebrow">Built to feel right</div>
-      <h2 class="display">The small stuff, sorted</h2>
+      <div class="eyebrow">The little things</div>
+      <h2 class="display">Quiet, careful, offline</h2>
     </div>
-    <div class="features">
-      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2.5l2.9 6.1 6.6.7-4.9 4.6 1.3 6.6L12 17.6 6.1 20.5l1.3-6.6-4.9-4.6 6.6-.7z"/></svg></div><h4>Stars &amp; rewards</h4><p>Clear stages, bank stars, spend them on hints when you're stuck.</p></div>
-      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M7 9a5 5 0 1110 0c0 2-1.2 3.1-2 4-.6.7-1 1.3-1 2H10c0-.7-.4-1.3-1-2-.8-.9-2-2-2-4z"/></svg></div><h4>Hints that help</h4><p>A few free ones per stage, more available when you need them.</p></div>
-      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7L3 11l4 4"/><path d="M3 11h11a6 6 0 010 12h-2"/></svg></div><h4>Undo &amp; add</h4><p>Step back a move, or copy remaining numbers down for more room.</p></div>
-      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 119.5 4a7 7 0 0010.5 10.5z"/></svg></div><h4>Light &amp; dark</h4><p>Matches your system automatically, or pick one yourself.</p></div>
-      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3c2.8 2.6 4.2 5.7 4.2 9s-1.4 6.4-4.2 9c-2.8-2.6-4.2-5.7-4.2-9s1.4-6.4 4.2-9z"/></svg></div><h4>20 languages</h4><p>Play in your own language, switch anytime from Settings.</p></div>
-      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9a13 13 0 0114 0M8 12.5a8.5 8.5 0 018 0M11 16a4 4 0 012 0"/><line x1="3" y1="3" x2="21" y2="21"/></svg></div><h4>No wifi needed</h4><p>Every board, every mode — entirely offline.</p></div>
-    </div>
-  </section>
-
-  <section id="showcase">
-    <div class="section-head">
-      <div class="eyebrow">See it in action</div>
-      <h2 class="display">One screen, no clutter</h2>
-    </div>
-    <div class="showcase">
-      <div class="phone"><img src="home.png" alt="Number Match home screen, showing difficulty tiers, the daily challenge, classic board and lifetime stats"></div>
-      <div class="showcase-list">
-        <div class="showcase-item"><div class="showcase-dot"></div><div><strong>Pick up where you left off</strong><p>Every tier remembers its own run — jump back in with one tap.</p></div></div>
-        <div class="showcase-item"><div class="showcase-dot"></div><div><strong>Your stats, always visible</strong><p>Best score, games won, and how far you've gotten — right on the home screen.</p></div></div>
-        <div class="showcase-item"><div class="showcase-dot"></div><div><strong>Nothing to configure</strong><p>Open it up and play — the whole game fits in one uncluttered screen.</p></div></div>
-      </div>
+    <div class="grid3">
+      <div class="card feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></div><h4>Handwritten</h4><p>Numbers in ink on a squared notebook page.</p></div>
+      <div class="card feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M7 9a5 5 0 1 1 10 0c0 2-1.2 3.1-2 4-.6.7-1 1.3-1 2h-4c0-.7-.4-1.3-1-2-.8-.9-2-2-2-4z"/></svg></div><h4>Hints on the best path</h4><p>A hint shows the next move of the page's best solution.</p></div>
+      <div class="card feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7L3 11l4 4"/><path d="M3 11h11a6 6 0 0 1 0 12h-2"/></svg></div><h4>Undo</h4><p>Step back a move and try another pair.</p></div>
+      <div class="card feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg></div><h4>Light &amp; night paper</h4><p>Cream paper by day, deep blue night paper in dark mode.</p></div>
+      <div class="card feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 2.6 4.2 5.7 4.2 9s-1.4 6.4-4.2 9c-2.8-2.6-4.2-5.7-4.2-9S9.2 5.6 12 3z"/></svg></div><h4>20 languages</h4><p>Switch any time in Settings.</p></div>
+      <div class="card feature"><div class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9a13 13 0 0 1 14 0M8 12.5a8.5 8.5 0 0 1 8 0M11 16a4 4 0 0 1 2 0"/><path d="M3 3l18 18"/></svg></div><h4>No ads, no account</h4><p>Nothing to sign up for, and no Wi-Fi needed.</p></div>
     </div>
   </section>
 
@@ -438,7 +410,7 @@
       <span class="lang-pill">Deutsch</span><span class="lang-pill">Português</span><span class="lang-pill">Italiano</span>
       <span class="lang-pill">Nederlands</span><span class="lang-pill">Polski</span><span class="lang-pill">Русский</span>
       <span class="lang-pill">Türkçe</span><span class="lang-pill">Tiếng Việt</span><span class="lang-pill">Bahasa Indonesia</span>
-      <span class="lang-pill">Bahasa Melayu</span><span class="lang-pill">العربية</span><span class="lang-pill">हिन्दी</span>
+      <span class="lang-pill">Bahasa Melayu</span><span class="lang-pill" lang="ar" dir="rtl">العربية</span><span class="lang-pill">हिन्दी</span>
       <span class="lang-pill">ไทย</span><span class="lang-pill">日本語</span><span class="lang-pill">한국어</span>
       <span class="lang-pill">简体中文</span><span class="lang-pill">繁體中文</span>
     </div>
@@ -446,178 +418,157 @@
 
   <section id="get">
     <div class="footer-cta">
-      <h2>Clear your first board today</h2>
-      <p>Free to play, no account needed. Endless, Classic and a new Daily Challenge every day.</p>
-      <a class="btn btn-primary" href="#get" style="margin-top:4px">Get it on the App Store</a>
+      <div class="eyebrow">Try it free</div>
+      <h2 class="display">Open the notebook</h2>
+      <p>Chapters 1 and 2 are free. A single purchase unlocks every chapter for good. No subscription, nothing to renew.</p>
+      <a class="btn btn-primary" href="#get">Get it on the App Store</a>
+    </div>
+  </section>
+
+  <section id="support">
+    <div class="fine">
+      <div class="card">
+        <h3>Support</h3>
+        <p>Questions, a page you're stuck on, or a purchase that didn't come through? Write to <a href="mailto:support@hanminstudio.online">support@hanminstudio.online</a>. In the app, Settings › Contact Support fills in your app version and device for you.</p>
+        <p style="margin-top:10px">Bought the full version on another device? Open any locked chapter and tap Restore Purchase.</p>
+      </div>
+      <div class="card" id="privacy">
+        <h3>Privacy</h3>
+        <p>Inkten doesn't collect, store or share any personal data.</p>
+        <ul>
+          <li>No account, no sign-in, no ads, no tracking and no analytics.</li>
+          <li>Your progress, settings and statistics are saved only on your device.</li>
+          <li>Purchases are handled entirely by Apple; we never see your payment details.</li>
+          <li>The only network request is the optional "Discover More Apps" list in Settings, which downloads a public list of our apps and sends nothing about you.</li>
+        </ul>
+        <p style="margin-top:10px">Questions about privacy: <a href="mailto:support@hanminstudio.online">support@hanminstudio.online</a>.</p>
+      </div>
     </div>
   </section>
 
   <footer>
-    <span>Number Match</span>
+    <span>© Hanmin Studio · Inkten</span>
     <span>Made for people who like their puzzles quiet.</span>
   </footer>
-
 </div>
 
 <script>
 (function(){
   "use strict";
-  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // The app's real page 1-01: make ten, clear the page, no adds, par 7. Rules as in the app: a
+  // pair is equal or sums to 10, and must reach along a row (wrapping to the next line), a
+  // column or a diagonal with only crossed-out numbers between.
+  var START = [8,6,6,1,1,3,7, 2,4,6,6,4,9,1];
+  var COLS = 7, PAR = 7;
+  var values, done, selected, moves;
+  var board = document.getElementById("board");
+  var status = document.getElementById("status");
+  var reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Board state mirrors the app's real icon at rest: 4 6 3 / 9 8 8 / 2 7 1
-  var values = [4,6,3, 9,8,8, 2,7,1];
-  var selected = [];
-  var boardEl = document.getElementById('board');
-  var hintEl = document.getElementById('demoHint');
-  var cells = [];
-  var busy = false;
-  var autoplayed = false;
-
-  function digitColor(v){ return 'var(--d'+v+')'; }
-
-  // `preview` is a purely visual highlight (used once, to open on the same two cells the
-  // real app icon shows selected) — kept separate from `selected`, the actual tap-driven
-  // state machine below, so the two never fight over what a cell's highlight means.
-  function render(preview){
-    boardEl.innerHTML = '';
-    var connector = document.createElement('div');
-    connector.className = 'connector';
-    connector.id = 'connector';
-    boardEl.appendChild(connector);
-    cells = values.map(function(v, i){
-      var cell = document.createElement('div');
-      cell.className = 'cell';
-      cell.dataset.index = i;
-      cell.setAttribute('role', 'button');
-      cell.setAttribute('tabindex', v === null ? '-1' : '0');
-      cell.setAttribute('aria-label', v === null ? 'empty' : 'number ' + v);
-      if (v === null) { cell.dataset.empty = '1'; }
-      var num = document.createElement('div');
-      num.className = 'num';
-      num.textContent = v === null ? '' : v;
-      if (v !== null) num.style.color = digitColor(v);
-      cell.appendChild(num);
-      var spark = document.createElement('div');
-      spark.className = 'spark';
-      spark.textContent = '✓';
-      cell.appendChild(spark);
-      cell.addEventListener('click', function(){ onTap(i); });
-      cell.addEventListener('keydown', function(e){
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onTap(i); }
-      });
-      boardEl.appendChild(cell);
-      return cell;
-    });
-    var highlighted = preview || selected;
-    highlighted.forEach(function(i){ cells[i].classList.add('selected'); });
+  function pairs(a, b){ return a === b || a + b === 10; }
+  function clearBetween(lo, hi, step){
+    for (var k = lo + step; k < hi; k += step){ if (!done[k]) return false; }
+    return true;
   }
-
-  function centerOf(i){
-    var r = cells[i].getBoundingClientRect();
-    var b = boardEl.getBoundingClientRect();
-    return { x: r.left - b.left + r.width/2, y: r.top - b.top + r.height/2 };
+  function connected(i, j){
+    var lo = Math.min(i, j), hi = Math.max(i, j);
+    if (clearBetween(lo, hi, 1)) return true;
+    var r1 = Math.floor(lo / COLS), c1 = lo % COLS, r2 = Math.floor(hi / COLS), c2 = hi % COLS;
+    if (c1 === c2 && clearBetween(lo, hi, COLS)) return true;
+    var dr = r2 - r1, dc = c2 - c1;
+    if (dr > 0 && Math.abs(dc) === dr) return clearBetween(lo, hi, dc > 0 ? COLS + 1 : COLS - 1);
+    return false;
   }
-
-  function drawConnector(a, b, cb){
-    var connector = document.getElementById('connector');
-    var p1 = centerOf(a), p2 = centerOf(b);
-    var dx = p2.x - p1.x, dy = p2.y - p1.y;
-    var len = Math.sqrt(dx*dx + dy*dy);
-    var angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    connector.style.transition = 'none';
-    connector.style.left = p1.x + 'px';
-    connector.style.top = (p1.y - 4.5) + 'px';
-    connector.style.transform = 'rotate(' + angle + 'deg)';
-    connector.style.width = '0px';
-    connector.style.opacity = '1';
-    if (reduceMotion) {
-      connector.style.width = len + 'px';
-      setTimeout(cb, 120);
-      return;
+  function legal(i, j){ return i !== j && !done[i] && !done[j] && pairs(values[i], values[j]) && connected(i, j); }
+  function anyMove(){
+    for (var i = 0; i < values.length; i++) for (var j = i + 1; j < values.length; j++) if (legal(i, j)) return [i, j];
+    return null;
+  }
+  // Depth-first search for a full clear from here, so the hint follows a winning line.
+  function solve(){
+    var left = done.filter(function(d){ return !d; }).length;
+    if (left === 0) return [];
+    for (var i = 0; i < values.length; i++) for (var j = i + 1; j < values.length; j++){
+      if (!legal(i, j)) continue;
+      done[i] = done[j] = true;
+      var rest = solve();
+      done[i] = done[j] = false;
+      if (rest) return [[i, j]].concat(rest);
     }
-    requestAnimationFrame(function(){
-      connector.classList.add('on');
-      requestAnimationFrame(function(){
-        connector.style.width = len + 'px';
-      });
-    });
-    setTimeout(function(){
-      connector.classList.remove('on');
-      connector.style.opacity = '0';
-      cb();
-    }, 260);
+    return null;
   }
 
-  function refill(indices){
-    indices.forEach(function(i){
-      values[i] = 1 + Math.floor(Math.random() * 9);
+  function strike(){
+    var ns = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("viewBox", "0 0 100 60");
+    var path = document.createElementNS(ns, "path");
+    path.setAttribute("d", "M2 56 Q 58 40 98 4");
+    svg.appendChild(path);
+    return svg;
+  }
+
+  function render(hint){
+    board.innerHTML = "";
+    values.forEach(function(v, i){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "cell" + (i >= values.length - COLS ? " row-last" : "");
+      b.textContent = v;
+      if (done[i]){ b.classList.add("done"); b.appendChild(strike()); b.setAttribute("aria-label", v + ", crossed out"); b.tabIndex = -1; }
+      else { b.setAttribute("aria-label", "" + v); }
+      if (selected === i) b.classList.add("selected");
+      if (hint && hint.indexOf(i) !== -1) b.classList.add("hint");
+      b.addEventListener("click", function(){ tap(i); });
+      board.appendChild(b);
     });
+    var left = done.filter(function(d){ return !d; }).length;
+    if (left === 0){
+      var stars = moves <= PAR ? 3 : moves <= PAR + 2 ? 2 : 1;
+      status.innerHTML = 'Cleared in ' + moves + ' moves <span class="stars">' + "★★★".slice(0, stars) + "</span>";
+    } else if (!anyMove()){
+      status.textContent = "No moves left — start over";
+    } else {
+      status.textContent = "Moves: " + moves + " · Par " + PAR;
+    }
+  }
+
+  function tap(i){
+    if (done[i]) return;
+    if (selected === null){ selected = i; render(); return; }
+    if (selected === i){ selected = null; render(); return; }
+    var first = selected;
+    selected = null;
+    if (legal(first, i)){
+      done[first] = done[i] = true;
+      moves++;
+      render();
+    } else {
+      render();
+      [first, i].forEach(function(k){
+        var cell = board.children[k];
+        if (!reduceMotion){ cell.classList.add("shake"); setTimeout(function(){ cell.classList.remove("shake"); }, 340); }
+      });
+    }
+  }
+
+  function reset(){
+    values = START.slice();
+    done = values.map(function(){ return false; });
+    selected = null;
+    moves = 0;
     render();
   }
 
-  function onTap(i){
-    if (busy || values[i] === null) return;
-    if (selected.indexOf(i) !== -1) { selected = []; render(); return; }
-
-    if (selected.length === 0) {
-      selected = [i];
-      render();
-      hintEl.textContent = 'now tap its match';
-      return;
-    }
-
-    var first = selected[0];
-    var a = values[first], b = values[i];
-    var isMatch = (a === b) || (a + b === 10);
-    selected = [];
-
-    if (isMatch) {
-      busy = true;
-      hintEl.textContent = 'matched!';
-      drawConnector(first, i, function(){
-        cells[first].querySelector('.spark').style.opacity = '1';
-        cells[i].querySelector('.spark').style.opacity = '1';
-        cells[first].querySelector('.num').style.opacity = '0';
-        cells[i].querySelector('.num').style.opacity = '0';
-        setTimeout(function(){
-          values[first] = null; values[i] = null;
-          render();
-          setTimeout(function(){
-            refill([first, i]);
-            busy = false;
-            hintEl.textContent = 'tap two numbers';
-          }, 260);
-        }, 320);
-      });
-    } else {
-      cells[first].classList.add('shake');
-      cells[i].classList.add('shake');
-      hintEl.textContent = 'not quite — try again';
-      setTimeout(function(){
-        cells[first].classList.remove('shake');
-        cells[i].classList.remove('shake');
-        hintEl.textContent = 'tap two numbers';
-      }, 320);
-    }
-  }
-
-  // First paint mirrors the shipped app icon exactly: 4 6 3 / 9 8 8 / 2 7 1, with the two
-  // center 8s already highlighted — nothing here depends on JS running to be legible.
-  render([4, 5]);
-
-  // A one-time, gentle demo of that same pair actually matching, so a visitor who never
-  // taps still sees the mechanic play out once. Skipped under reduced motion, in which case
-  // the static preview above is where the board stays until someone taps it.
-  if (!reduceMotion) {
-    setTimeout(function(){
-      if (autoplayed) return;
-      autoplayed = true;
-      render();
-      onTap(4);
-      setTimeout(function(){ onTap(5); }, 260);
-    }, 1400);
-  }
+  document.getElementById("resetBtn").addEventListener("click", reset);
+  document.getElementById("hintBtn").addEventListener("click", function(){
+    var line = solve();
+    var next = line && line.length ? line[0] : anyMove();
+    selected = null;
+    render(next || undefined);
+  });
+  reset();
 })();
 </script>
-
-</body></html>
+</body>
+</html>
