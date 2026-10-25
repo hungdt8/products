@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mini Sudoku — Daily 6×6 Number Puzzle</title>
-  <meta name="description" content="A fresh 6×6 Sudoku puzzle every morning. Four difficulty levels, daily streaks, hints, and a clean ad-free design. One-time unlock, no subscription." />
+  <title>Mini Sudoku — Daily 6×6 &amp; Classic 9×9 Sudoku</title>
+  <meta name="description" content="Quick 6×6 Sudoku for daily play, plus Classic 9×9 when you want more. Four levels on each board, daily streaks, notes, hints and a clean ad-free design. One-time unlock, no subscription." />
+
+  <link rel="icon" type="image/png" href="app-icon.png" />
+  <link rel="apple-touch-icon" href="app-icon.png" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -71,9 +74,7 @@
     }
     .nav-logo .icon {
       width: 32px; height: 32px; border-radius: 8px;
-      background: linear-gradient(135deg, #B97D10, #E8AA30);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
     }
     .btn-nav {
       display: inline-flex; align-items: center; gap: 6px;
@@ -259,6 +260,33 @@
     .hm-cell.done-expert { background: #7C3AED; }
     .hm-cell.future      { background: #F0EDE8; }
 
+    /* ── Classic 9×9 ──────────────────────────────────── */
+    .classic { padding: 96px 0; background: linear-gradient(160deg, #EFF6FF 0%, #F8FBFF 100%); }
+    .classic-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center;
+    }
+    .classic h2 {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800; letter-spacing: -1px; line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .classic h2 span { color: #2563EB; }
+    .classic p { font-size: 17px; line-height: 1.65; color: var(--mid); }
+    .classic-list { list-style: none; margin-top: 28px; display: flex; flex-direction: column; gap: 14px; }
+    .classic-list li { display: flex; gap: 12px; font-size: 15px; line-height: 1.5; color: var(--mid); }
+    .classic-list li strong { color: var(--dark); }
+    .classic-list li::before {
+      content: "✓"; flex-shrink: 0;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(37,99,235,0.12); color: #2563EB;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; margin-top: 1px;
+    }
+    .tag.blue { color: #2563EB; background: rgba(37,99,235,0.10); }
+    .classic-shot { display: flex; justify-content: center; }
+    .classic-shot .phone-frame { width: 260px; filter: drop-shadow(0 24px 60px rgba(37,99,235,0.18)); }
+
     /* ── Difficulties ─────────────────────────────────── */
     .diff-section { padding: 96px 0; }
     .diff-grid {
@@ -333,8 +361,7 @@
     }
     footer .foot-logo .icon {
       width: 28px; height: 28px; border-radius: 7px;
-      background: linear-gradient(135deg, #B97D10, #E8AA30);
-      display: flex; align-items: center; justify-content: center; font-size: 14px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
     }
     footer p { font-size: 13px; color: var(--light); }
     footer a { color: var(--light); text-decoration: none; }
@@ -349,6 +376,7 @@
       .features-grid  { grid-template-columns: 1fr 1fr; }
       .screens-grid   { grid-template-columns: repeat(2, 1fr); }
       .daily-inner    { grid-template-columns: 1fr; }
+      .classic-inner  { grid-template-columns: 1fr; }
       .diff-grid      { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 560px) {
@@ -365,7 +393,7 @@
 <nav>
   <div class="container nav-inner">
     <a class="nav-logo" href="#">
-      <div class="icon">♟</div>
+      <img class="icon" src="app-icon.png" alt="" />
       Mini Sudoku
     </a>
     <a class="btn-nav" href="https://apps.apple.com/app/id6770221466" target="_blank">
@@ -381,9 +409,9 @@
 <section class="hero">
   <div class="container hero-inner">
     <div>
-      <div class="tag">Free to try · No subscription</div>
-      <h1>The <span>6×6</span> puzzle<br>built for daily play.</h1>
-      <p>Smaller grid, same satisfying logic. Solve a fresh puzzle every morning — track your streak, beat your time, and grow sharper every day.</p>
+      <div class="tag">New in 2.0 · Classic 9×9</div>
+      <h1>Quick <span>6×6</span>.<br>Classic <span>9×9</span>.<br>Daily habit.</h1>
+      <p>Play a quick 6×6 puzzle on your coffee break, or switch to the full 9×9 grid when you want a longer think. A fresh daily puzzle, streaks, notes and hints. No ads.</p>
       <div class="hero-actions">
         <a class="btn-primary" href="https://apps.apple.com/app/id6770221466" target="_blank">
           <svg viewBox="0 0 24 24" fill="currentColor">
@@ -391,14 +419,14 @@
           </svg>
           Download on the App Store
         </a>
-        <span class="hero-note"><strong>7 days free</strong> · then $2.99 once, forever</span>
+        <span class="hero-note"><strong>3 days free</strong> · then $2.99 once, forever</span>
       </div>
     </div>
 
     <div class="hero-screens">
       <div class="phone-wrap back">
         <div class="phone-frame">
-          <img src="mini-sudoku-screenshots/screen-game.jpg" alt="Game screen" />
+          <img src="mini-sudoku-screenshots/screen-classic.jpg" alt="Classic 9×9 game screen" />
         </div>
       </div>
       <div class="phone-wrap front">
@@ -414,6 +442,7 @@
 <div class="strip">
   <div class="strip-inner">
     <span>🧩 <em>6×6 Grid</em></span>
+    <span>🔢 <em>Classic 9×9</em></span>
     <span>🔥 <em>Daily Streaks</em></span>
     <span>💡 <em>Smart Hints</em></span>
     <span>🚫 <em>No Ads</em></span>
@@ -423,6 +452,7 @@
     <span>👑 <em>One-Time Unlock</em></span>
     <!-- duplicate for seamless loop -->
     <span>🧩 <em>6×6 Grid</em></span>
+    <span>🔢 <em>Classic 9×9</em></span>
     <span>🔥 <em>Daily Streaks</em></span>
     <span>💡 <em>Smart Hints</em></span>
     <span>🚫 <em>No Ads</em></span>
@@ -450,12 +480,12 @@
       <div class="feat-card">
         <div class="feat-icon" style="background:#F0FFF5">⚡️</div>
         <h3>Quick to Solve</h3>
-        <p>The 6×6 format takes 2–15 minutes — perfect for a coffee break or commute.</p>
+        <p>A 6×6 puzzle takes a few minutes — perfect for a coffee break or commute.</p>
       </div>
       <div class="feat-card">
         <div class="feat-icon" style="background:#FAF5FF">🏆</div>
         <h3>Four Difficulty Levels</h3>
-        <p>Easy through Expert. Grow at your own pace or go straight to the deep end.</p>
+        <p>Easy through Expert on both boards. Grow at your own pace or go straight to the deep end.</p>
       </div>
       <div class="feat-card">
         <div class="feat-icon" style="background:#EFF6FF">📝</div>
@@ -476,19 +506,42 @@
   </div>
 </section>
 
+<!-- ── Classic 9×9 ───────────────────────────────────── -->
+<section class="classic" id="classic">
+  <div class="container classic-inner">
+    <div>
+      <div class="tag blue">New · Classic 9×9</div>
+      <h2>Ready for more?<br>Go <span>full size</span>.</h2>
+      <p>Switch from Mini to Classic on the home screen and play the full 9×9 Sudoku, with the same clean design you already know.</p>
+      <ul class="classic-list">
+        <li><span><strong>Four levels of its own</strong>, tuned for the bigger grid, from Easy to Expert.</span></li>
+        <li><span><strong>Notes, hints, undo and auto-check</strong>, just like Mini.</span></li>
+        <li><span><strong>Pick up where you left off.</strong> Your Classic game is saved if you're interrupted.</span></li>
+        <li><span><strong>Its own stats and Game Center leaderboards</strong>, so 9×9 times never mix with 6×6.</span></li>
+        <li><span><strong>A short tutorial</strong> walks you through the 9×9 rules.</span></li>
+      </ul>
+    </div>
+    <div class="classic-shot">
+      <div class="phone-frame">
+        <img src="mini-sudoku-screenshots/screen-classic.jpg" alt="Classic 9×9 puzzle in progress" />
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ── Screenshots ───────────────────────────────────── -->
 <section class="screens-section">
   <div class="container">
     <div class="section-header">
       <div class="tag">In-App Screenshots</div>
       <h2>Clean. Fast. Focused.</h2>
-      <p>Light and dark mode — looks great on any iPhone.</p>
+      <p>Mini and Classic, light and dark — on iPhone and iPad.</p>
     </div>
     <div class="screens-grid">
       <div class="screen-card"><img src="mini-sudoku-screenshots/screen-home.jpg" alt="Home screen" /></div>
-      <div class="screen-card"><img src="mini-sudoku-screenshots/screen-game.jpg" alt="Game — light mode" /></div>
-      <div class="screen-card"><img src="mini-sudoku-screenshots/screen-dark.jpg" alt="Game — dark mode" /></div>
-      <div class="screen-card"><img src="mini-sudoku-screenshots/screen-win.jpg" alt="Win screen" /></div>
+      <div class="screen-card"><img src="mini-sudoku-screenshots/screen-classic.jpg" alt="Classic 9×9 game" /></div>
+      <div class="screen-card"><img src="mini-sudoku-screenshots/screen-game.jpg" alt="Mini 6×6 game — light mode" /></div>
+      <div class="screen-card"><img src="mini-sudoku-screenshots/screen-dark.jpg" alt="Mini 6×6 game — dark mode" /></div>
     </div>
   </div>
 </section>
@@ -550,32 +603,32 @@
     <div class="section-header">
       <div class="tag">Difficulty</div>
       <h2>Play at your level.</h2>
-      <p>Four carefully tuned difficulties — from first-timer to seasoned solver.</p>
+      <p>Four carefully tuned levels on each board — from first-timer to seasoned solver.</p>
     </div>
     <div class="diff-grid">
       <div class="diff-card diff-easy">
         <div class="level">Easy</div>
         <h3>🌱 Beginner</h3>
         <p>More given cells, relaxed logic. Perfect for learning the rules.</p>
-        <div class="time">⏱ 2–4 min avg</div>
+        <div class="time">⏱ Mini 1–3 min · Classic 5–8 min</div>
       </div>
       <div class="diff-card diff-medium">
         <div class="level">Medium</div>
         <h3>⚡ Challenge</h3>
         <p>Requires a little more thought. A satisfying daily workout.</p>
-        <div class="time">⏱ 5–8 min avg</div>
+        <div class="time">⏱ Mini 3–5 min · Classic 8–12 min</div>
       </div>
       <div class="diff-card diff-hard">
         <div class="level">Hard</div>
         <h3>🔥 Advanced</h3>
         <p>Fewer clues, deeper chains. Think two steps ahead.</p>
-        <div class="time">⏱ 8–14 min avg</div>
+        <div class="time">⏱ Mini 5–7 min · Classic 12–20 min</div>
       </div>
       <div class="diff-card diff-expert">
         <div class="level">Expert</div>
         <h3>👑 Master</h3>
         <p>Minimal given cells. Maximum satisfaction when you crack it.</p>
-        <div class="time">⏱ 15+ min avg</div>
+        <div class="time">⏱ Mini 7+ min · Classic 20+ min</div>
       </div>
     </div>
   </div>
@@ -594,17 +647,18 @@
       <div class="price">$2.99</div>
       <div class="price-sub">One-time purchase · No recurring charges</div>
       <ul class="pricing-perks">
-        <li>All four difficulty levels</li>
+        <li>Mini 6×6 and Classic 9×9</li>
+        <li>All four difficulty levels on both boards</li>
         <li>Unlimited daily puzzles &amp; streaks</li>
         <li>Hints — use as many as you need</li>
         <li>Full statistics &amp; heatmap history</li>
         <li>Ad-free, always</li>
-        <li>7-day free trial — no credit card needed</li>
+        <li>3-day free trial — no credit card needed</li>
       </ul>
       <a class="btn-gold" href="https://apps.apple.com/app/id6770221466" target="_blank">
         Download Free on App Store
       </a>
-      <div class="pricing-note">Available on iPhone · iOS 17+</div>
+      <div class="pricing-note">Available on iPhone &amp; iPad · iOS 17+</div>
     </div>
   </div>
 </section>
@@ -613,7 +667,7 @@
 <footer>
   <div class="container">
     <a class="foot-logo" href="#">
-      <div class="icon">♟</div>
+      <img class="icon" src="app-icon.png" alt="" />
       Mini Sudoku
     </a>
     <p>Made with care by <strong>Hanmin Studio</strong> &nbsp;·&nbsp;
