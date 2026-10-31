@@ -1,0 +1,451 @@
+<title>Castoff</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Castoff is a harbor logic puzzle for iPhone and iPad. Every board starts as a tangle. Find the order and clear the water.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Figtree:wght@400;500;700&family=Unbounded:wght@600;800&display=swap">
+<style>
+/* Layout: the hero is a real board you can clear, and the page below it reads as that harbor's chart key. */
+:root {
+	--bg: #E4F2EF;
+	--fg: #17324F;
+	--muted: #4F6B77;
+	--band: #FAFDFC;
+	--control: #CFE3E0;
+	--dot: #A5C4C1;
+	--arrow: #17324F;
+	--accent: #E85F3E;
+	--button: #FF7E5F;
+	--on-button: #10243E;
+	--heart: #E8502E;
+	--gold: #B97F0B;
+	--hole: #17324F;
+	--display: "Unbounded", "Arial Black", system-ui, sans-serif;
+	--body: "Figtree", system-ui, -apple-system, sans-serif;
+	--mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) {
+		--bg: #10243E; --fg: #F4EEE2; --muted: #9DB0C6; --band: #1A3352; --control: #2A4666; --dot: #4C6685;
+		--arrow: #F1E9DA; --accent: #FF7E5F; --button: #FF7E5F; --on-button: #10243E; --heart: #FF6B4A; --gold: #FFC857; --hole: #060E1A;
+		color-scheme: dark;
+	}
+}
+:root[data-theme="dark"] {
+	--bg: #10243E; --fg: #F4EEE2; --muted: #9DB0C6; --band: #1A3352; --control: #2A4666; --dot: #4C6685;
+	--arrow: #F1E9DA; --accent: #FF7E5F; --button: #FF7E5F; --on-button: #10243E; --heart: #FF6B4A; --gold: #FFC857; --hole: #060E1A;
+	color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 400 1.0625rem/1.6 var(--body); }
+.wrap {
+	max-width: 1120px;
+	margin-inline: auto;
+	padding-left: max(16px, env(safe-area-inset-left, 0px));
+	padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h2 { font-size: clamp(1.5rem, 4vw, 2.25rem); font-weight: 600; line-height: 1.2; }
+h3 { margin: 0; font-size: 1.0625rem; font-weight: 700; }
+p { margin: 0; }
+a { color: inherit; }
+.label { font: 500 0.8125rem/1.4 var(--mono); letter-spacing: 0.04em; color: var(--muted); }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; }
+.mark { display: inline-flex; align-items: center; gap: 10px; font: 600 1rem var(--display); text-decoration: none; }
+.mark svg { width: 30px; height: 30px; }
+
+.hero { display: grid; gap: 28px; padding-block: 12px 56px; }
+.hero > * { min-width: 0; }
+.hero h1 { font-size: clamp(2.6rem, 15vw, 5.4rem); font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: var(--accent); }
+.lede { display: grid; gap: 18px; align-content: center; }
+.lede .big { font-size: clamp(1.25rem, 3vw, 1.6rem); line-height: 1.35; font-weight: 500; max-width: 26em; text-wrap: balance; }
+.soon { display: inline-flex; align-items: center; gap: 10px; justify-self: start; padding: 11px 18px; border-radius: 14px; background: var(--control); font-weight: 700; }
+.soon svg { width: 16px; height: 16px; fill: var(--accent); flex: none; }
+
+.game { display: grid; gap: 12px; width: 100%; max-width: 520px; justify-self: center; }
+.bar { display: flex; align-items: center; gap: 12px; }
+.progress { flex: 1; height: 4px; border-radius: 4px; background: var(--control); overflow: hidden; }
+.progress i { display: block; height: 100%; width: 0; background: var(--gold); transition: width 0.3s; }
+.hearts { display: flex; gap: 4px; }
+.hearts svg { width: 22px; height: 22px; fill: var(--heart); stroke: var(--heart); stroke-width: 2; transition: fill 0.2s; }
+.hearts svg.lost { fill: transparent; }
+#board { display: block; width: 100%; aspect-ratio: 1; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+#board .dot { fill: var(--dot); }
+#board .piece { cursor: pointer; outline: none; }
+#board .target { fill: none; stroke: transparent; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; pointer-events: stroke; }
+#board .shaft { fill: none; stroke: var(--arrow); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+#board .tip { fill: var(--arrow); pointer-events: none; }
+#board .coil .shaft { stroke: var(--accent); }
+#board .coil .tip { fill: var(--accent); }
+#board .hinted .shaft { stroke: var(--gold); }
+#board .hinted .tip { fill: var(--gold); }
+#board .bumped .shaft { stroke: var(--heart); }
+#board .bumped .tip { fill: var(--heart); }
+#board .piece:focus-visible .target { stroke: var(--control); }
+#board.over .piece { pointer-events: none; cursor: default; }
+.status { min-height: 3.2em; font-weight: 500; }
+.tools { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+button { font: 700 0.9375rem var(--body); min-height: 48px; border: 0; border-radius: 14px; background: var(--control); color: var(--fg); cursor: pointer; transition: transform 0.12s; }
+button:active { transform: scale(0.97); }
+button.primary { background: var(--button); color: var(--on-button); }
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+section { padding-block: 56px; }
+.band { background: var(--band); }
+.intro { display: grid; gap: 10px; max-width: 40em; margin-bottom: 32px; }
+.key { display: grid; gap: 28px 32px; margin: 0; padding: 0; list-style: none; }
+.key li { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 2px 14px; align-content: start; }
+.key svg { grid-row: span 3; width: 52px; height: 52px; }
+.pair { display: grid; gap: 40px; }
+.pair > div { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.free { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 0; padding: 0; list-style: none; font: 600 clamp(1.05rem, 3vw, 1.4rem)/1.4 var(--display); }
+.privacy { max-width: 40em; display: grid; gap: 12px; }
+footer { padding-block: 24px 40px; }
+
+@media (min-width: 620px) { .key { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pair { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 980px) {
+	.hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; padding-block: 24px 72px; }
+	.hero h1 { font-size: clamp(3.6rem, 7.4vw, 5.4rem); }
+	.key { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+	<header class="top">
+		<a class="mark" href="#play">
+			<svg viewBox="0 0 70 70" aria-hidden="true"><path d="M30 30H40V40H20V20H50V50H10V10H56" fill="none" stroke="var(--accent)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M68 10L53 2L56 10L53 18Z" fill="var(--accent)"/></svg>
+			Castoff
+		</a>
+		<span class="label">iPhone and iPad</span>
+	</header>
+
+	<main class="hero" id="play">
+		<div class="lede">
+			<p class="label">Harbor logic puzzle</p>
+			<h1>Castoff</h1>
+			<p class="big">Every board starts as a tangle. Which line can leave first?</p>
+			<p>Try a board right here. The coral line is boxed in, so it can't go first.</p>
+			<p class="soon"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M14 8L4 2L6 8L4 14Z"/></svg>Coming soon to the App Store</p>
+		</div>
+
+		<div class="game">
+			<div class="bar">
+				<div class="progress" id="progress" role="progressbar" aria-label="Board cleared" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div>
+				<div class="hearts" id="hearts" role="img" aria-label="3 of 3 hearts"></div>
+			</div>
+			<svg id="board" viewBox="-9 -9 78 78" role="group" aria-label="Playable puzzle board"></svg>
+			<p class="status" id="status" aria-live="polite">Tap an arrow with a clear run to open water. Hit another arrow and you lose a heart.</p>
+			<div class="tools">
+				<button id="hint" type="button">Show a free arrow</button>
+				<button id="reset" type="button">Start over</button>
+			</div>
+		</div>
+	</main>
+</div>
+
+<section class="band">
+	<div class="wrap">
+		<div class="intro">
+			<h2>The chart key keeps growing</h2>
+			<p>Each new piece arrives with its own rule, and the game explains it the first time you meet it.</p>
+		</div>
+		<ul class="key">
+			<li>
+				<svg viewBox="0 0 52 52" aria-hidden="true"><defs><linearGradient id="flare" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF4F5E"/><stop offset="0.55" stop-color="#FF8A3D"/><stop offset="1" stop-color="#FFC857"/></linearGradient></defs><rect x="23" y="16" width="6" height="30" rx="3" fill="url(#flare)"/><path d="M26 4L37 19L26 15L15 19Z" fill="#FFC857"/></svg>
+				<span class="label">Level 6</span><h3>Flare</h3><p>Launches up to three more free arrows.</p>
+			</li>
+			<li>
+				<svg viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="19" fill="#C9743A"/><text x="26" y="33" text-anchor="middle" font-family="DM Mono, monospace" font-weight="500" font-size="20" fill="#FFF8EE">5</text></svg>
+				<span class="label">Level 11</span><h3>Anchor</h3><p>Holds the way until enough arrows have left.</p>
+			</li>
+			<li>
+				<svg viewBox="0 0 52 52" aria-hidden="true"><path d="M14 4H38V34L46 34L26 49L6 34L14 34Z" fill="var(--arrow)"/></svg>
+				<span class="label">Level 16</span><h3>Barge</h3><p>Needs all three lanes clear.</p>
+			</li>
+			<li>
+				<svg viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="18" fill="var(--hole)"/><circle cx="26" cy="26" r="21" fill="none" stroke="var(--muted)" stroke-width="2.5"/><circle cx="26" cy="26" r="9" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="10 6"/></svg>
+				<span class="label">Level 21</span><h3>Whirlpool</h3><p>Swallows any arrow that reaches it.</p>
+			</li>
+			<li>
+				<svg viewBox="0 0 52 52" aria-hidden="true"><path d="M8 18H26A8 8 0 0 1 34 26V46M8 34H18V46" fill="none" stroke="#6F93A8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+				<span class="label">Level 26</span><h3>Canal</h3><p>Bends an arrow's path, and its walls stop it.</p>
+			</li>
+			<li>
+				<svg viewBox="0 0 52 52" aria-hidden="true"><circle cx="17" cy="17" r="12" fill="none" stroke="#2FB5A6" stroke-width="3.5"/><circle cx="17" cy="17" r="4" fill="#2FB5A6"/><circle cx="35" cy="35" r="12" fill="none" stroke="#2FB5A6" stroke-width="3.5"/><circle cx="35" cy="35" r="4" fill="#2FB5A6"/></svg>
+				<span class="label">Level 31</span><h3>Tunnel</h3><p>Sends an arrow out of its twin, same heading.</p>
+			</li>
+		</ul>
+	</div>
+</section>
+
+<section>
+	<div class="wrap pair">
+		<div>
+			<p class="label">Every 5th level, from level 10</p>
+			<h2>Rough water</h2>
+			<p>Rough levels give you two hearts instead of three. Plan before you tap, because you get one mistake.</p>
+		</div>
+		<div>
+			<p class="label">Every day, from level 6</p>
+			<h2>Daily charts</h2>
+			<p>A new picture puzzle waits each day. Complete it to add to your chart count.</p>
+		</div>
+	</div>
+</section>
+
+<section class="band">
+	<div class="wrap">
+		<div class="intro"><h2>Nothing between you and the puzzle</h2></div>
+		<ul class="free">
+			<li>No ads</li>
+			<li>No in-app purchases</li>
+			<li>No account</li>
+			<li>Plays offline</li>
+		</ul>
+	</div>
+</section>
+
+<section id="privacy">
+	<div class="wrap">
+		<div class="privacy">
+			<h2>Privacy</h2>
+			<p>Castoff does not collect your personal data. Your progress and settings stay on your device, and the game has no ads, analytics, tracking or account.</p>
+			<p class="label">Last updated 31 October 2026</p>
+		</div>
+	</div>
+</section>
+
+<footer>
+	<div class="wrap"><p class="label">© 2026 Hanmin Studio</p></div>
+</footer>
+
+<script>
+const SIZE = 7;
+const ARROWS = [
+	{ name: "coil", cells: [[3,3],[4,3],[4,4],[3,4],[2,4],[2,3],[2,2],[3,2],[4,2],[5,2]] },
+	{ name: "east", cells: [[6,0],[6,1],[6,2],[6,3]] },
+	{ name: "hook", cells: [[5,3],[5,4],[6,4]] },
+	{ name: "top", cells: [[1,0],[2,0],[3,0]] },
+	{ name: "topShort", cells: [[4,0],[5,0]] },
+	{ name: "shelf", cells: [[3,1],[4,1],[5,1]] },
+	{ name: "corner", cells: [[0,2],[0,1],[0,0]] },
+	{ name: "drop", cells: [[1,1],[1,2],[1,3],[1,4]] },
+	{ name: "low", cells: [[0,5],[1,5],[2,5],[3,5]] },
+	{ name: "edge", cells: [[0,3],[0,4]] },
+	{ name: "floor", cells: [[5,6],[4,6],[3,6],[2,6]] },
+	{ name: "bend", cells: [[5,5],[6,5],[6,6]] },
+];
+
+const CELL = 10, RADIUS = 2.8, SVG = "http://www.w3.org/2000/svg";
+const board = document.getElementById("board");
+const statusLine = document.getElementById("status");
+const heartsBox = document.getElementById("hearts");
+const progress = document.getElementById("progress");
+const hintButton = document.getElementById("hint");
+const resetButton = document.getElementById("reset");
+const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const INTRO = statusLine.textContent;
+const HEADINGS = { "1,0": "right", "-1,0": "left", "0,1": "down", "0,-1": "up" };
+
+let pieces = [], hearts = 3, finished = false;
+
+function element(name, attributes, parent) {
+	const node = document.createElementNS(SVG, name);
+	for (const key in attributes) node.setAttribute(key, attributes[key]);
+	if (parent) parent.appendChild(node);
+	return node;
+}
+
+function heading(cells) {
+	const [hx, hy] = cells[cells.length - 1], [px, py] = cells[cells.length - 2];
+	return [hx - px, hy - py];
+}
+
+/* The stretch of an arrow's track from `reach` to `reach + length`, as points plus the heading at its end. */
+function stretch(piece, reach) {
+	const track = piece.track, out = [];
+	const from = reach, to = reach + piece.length;
+	let walked = 0, end = null, dir = [0, -1];
+	for (let i = 1; i < track.length && !end; i++) {
+		const a = track[i - 1], b = track[i];
+		const span = Math.hypot(b[0] - a[0], b[1] - a[1]);
+		const unit = [(b[0] - a[0]) / span, (b[1] - a[1]) / span];
+		if (!out.length && from <= walked + span) out.push([a[0] + unit[0] * (from - walked), a[1] + unit[1] * (from - walked)]);
+		if (to <= walked + span) {
+			end = [a[0] + unit[0] * (to - walked), a[1] + unit[1] * (to - walked)];
+			dir = unit;
+		} else if (out.length) {
+			out.push(b);
+		}
+		walked += span;
+	}
+	out.push(end);
+	return { points: out, dir };
+}
+
+function shaftPath(points) {
+	let d = "M" + points[0].join(" ");
+	for (let i = 1; i < points.length - 1; i++) {
+		const [px, py] = points[i - 1], [x, y] = points[i], [nx, ny] = points[i + 1];
+		const before = Math.min(RADIUS, Math.hypot(x - px, y - py) / 2), after = Math.min(RADIUS, Math.hypot(nx - x, ny - y) / 2);
+		const inLength = Math.hypot(x - px, y - py) || 1, outLength = Math.hypot(nx - x, ny - y) || 1;
+		d += `L${x - (x - px) / inLength * before} ${y - (y - py) / inLength * before}`;
+		d += `Q${x} ${y} ${x + (nx - x) / outLength * after} ${y + (ny - y) / outLength * after}`;
+	}
+	return d + "L" + points[points.length - 1].join(" ");
+}
+
+/* The game's swallowtail head. */
+function tipPath(at, [dx, dy]) {
+	const length = 4.8, half = 2.8, forward = 4;
+	const tip = [at[0] + dx * forward, at[1] + dy * forward];
+	const base = [tip[0] - dx * length, tip[1] - dy * length];
+	const notch = [base[0] + dx * length * 0.25, base[1] + dy * length * 0.25];
+	return `M${tip.join(" ")}L${base[0] - dy * half} ${base[1] + dx * half}L${notch.join(" ")}L${base[0] + dy * half} ${base[1] - dx * half}Z`;
+}
+
+function draw(piece, reach) {
+	const { points, dir } = stretch(piece, reach);
+	piece.shaft.setAttribute("d", shaftPath(points));
+	piece.tip.setAttribute("d", tipPath(points[points.length - 1], dir));
+}
+
+/* Cells between this arrow's head and the first arrow in its way, or null when the run is clear. */
+function runBeforeObstacle(piece) {
+	const [hx, hy] = piece.cells[piece.cells.length - 1], [dx, dy] = heading(piece.cells);
+	const taken = new Set();
+	for (const other of pieces) {
+		if (other !== piece && !other.gone) other.cells.forEach((c) => taken.add(c.join()));
+	}
+	let steps = 0;
+	for (let x = hx + dx, y = hy + dy; x >= 0 && y >= 0 && x < SIZE && y < SIZE; x += dx, y += dy, steps++) {
+		if (taken.has(x + "," + y)) return steps;
+	}
+	return null;
+}
+
+function animate(seconds, frame, done) {
+	if (calm) { frame(1); done(); return; }
+	const start = performance.now();
+	const tick = (now) => {
+		const t = Math.min(1, (now - start) / (seconds * 1000));
+		frame(t);
+		if (t < 1) requestAnimationFrame(tick); else done();
+	};
+	requestAnimationFrame(tick);
+}
+
+function showHearts() {
+	heartsBox.setAttribute("aria-label", `${hearts} of 3 hearts`);
+	[...heartsBox.children].forEach((heart, index) => heart.classList.toggle("lost", index >= hearts));
+}
+
+function showProgress() {
+	const cleared = Math.round(pieces.filter((p) => p.gone).length / pieces.length * 100);
+	progress.firstElementChild.style.width = cleared + "%";
+	progress.setAttribute("aria-valuenow", cleared);
+}
+
+function finish(message) {
+	finished = true;
+	board.classList.add("over");
+	statusLine.textContent = message;
+	resetButton.textContent = "Play again";
+	resetButton.classList.add("primary");
+	hintButton.disabled = true;
+}
+
+function clearHint() {
+	pieces.forEach((p) => p.group.classList.remove("hinted"));
+}
+
+function tapped(piece) {
+	if (finished || piece.gone || piece.bumping) return;
+	clearHint();
+	const run = runBeforeObstacle(piece);
+	if (run === null) {
+		piece.gone = true;
+		piece.group.removeAttribute("tabindex");
+		piece.group.style.pointerEvents = "none";
+		statusLine.textContent = INTRO;
+		showProgress();
+		const distance = piece.length + 110;
+		animate(0.55 + piece.length / 200, (t) => draw(piece, distance * t * t), () => piece.group.remove());
+		if (pieces.every((p) => p.gone)) finish("Clear waters! New pieces and daily charts are waiting in the game.");
+		return;
+	}
+	piece.bumping = true;
+	piece.group.classList.add("bumped");
+	hearts -= 1;
+	showHearts();
+	statusLine.textContent = "Something in the way? Move that arrow first.";
+	if (hearts === 0) finish("Run aground. Every board has an order, so try this one again.");
+	const reach = Math.max(1.6, run * CELL + 1.6);
+	animate(0.4, (t) => draw(piece, reach * (t < 0.5 ? t * 2 : 2 - t * 2)), () => {
+		draw(piece, 0);
+		piece.group.classList.remove("bumped");
+		piece.bumping = false;
+	});
+}
+
+function build() {
+	board.replaceChildren();
+	board.classList.remove("over");
+	finished = false;
+	hearts = 3;
+	hintButton.disabled = false;
+	resetButton.textContent = "Start over";
+	resetButton.classList.remove("primary");
+	statusLine.textContent = INTRO;
+	for (let y = 0; y < SIZE; y++) {
+		for (let x = 0; x < SIZE; x++) element("circle", { class: "dot", cx: x * CELL, cy: y * CELL, r: 0.7 }, board);
+	}
+	pieces = ARROWS.map((arrow, index) => {
+		const points = arrow.cells.map(([x, y]) => [x * CELL, y * CELL]);
+		const [dx, dy] = heading(arrow.cells);
+		const last = points[points.length - 1];
+		const piece = {
+			name: arrow.name,
+			cells: arrow.cells,
+			length: (points.length - 1) * CELL,
+			track: [...points, [last[0] + dx * 500, last[1] + dy * 500]],
+			gone: false,
+			bumping: false,
+		};
+		piece.group = element("g", {
+			class: arrow.name === "coil" ? "piece coil" : "piece",
+			role: "button",
+			tabindex: 0,
+			"data-name": arrow.name,
+			"aria-label": `Arrow ${index + 1} of ${ARROWS.length}, ${arrow.cells.length} cells long, pointing ${HEADINGS[[dx, dy].join()]}`,
+		}, board);
+		element("path", { class: "target", d: shaftPath(points) }, piece.group);
+		piece.shaft = element("path", { class: "shaft" }, piece.group);
+		piece.tip = element("path", { class: "tip" }, piece.group);
+		draw(piece, 0);
+		piece.group.addEventListener("click", () => tapped(piece));
+		piece.group.addEventListener("keydown", (event) => {
+			if (event.key === "Enter" || event.key === " ") { event.preventDefault(); tapped(piece); }
+		});
+		return piece;
+	});
+	showHearts();
+	showProgress();
+}
+
+for (let i = 0; i < 3; i++) {
+	element("path", { d: "M12 21C5 15 2 11.500 2 8A5.200 5.200 0 0 1 12 5.800A5.200 5.200 0 0 1 22 8C22 11.500 19 15 12 21Z" }, element("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, heartsBox));
+}
+hintButton.addEventListener("click", () => {
+	clearHint();
+	const free = pieces.find((p) => !p.gone && runBeforeObstacle(p) === null);
+	if (free) {
+		free.group.classList.add("hinted");
+		statusLine.textContent = "This one has a clear run.";
+	}
+});
+resetButton.addEventListener("click", build);
+build();
+</script>
