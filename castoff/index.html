@@ -1,6 +1,6 @@
 <title>Castoff</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Castoff is a harbor logic puzzle for iPhone and iPad. Every board starts as a tangle. Find the order and clear the water.">
+<meta name="description" content="Castoff is the puzzle where the water moves. Sandbars open and close as the tide turns, on iPhone and iPad.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Figtree:wght@400;500;700&family=Unbounded:wght@600;800&display=swap">
@@ -20,6 +20,8 @@
 	--heart: #E8502E;
 	--gold: #B97F0B;
 	--hole: #17324F;
+	--sand: #E3C58E;
+	--high-water: #B7DFE4;
 	--display: "Unbounded", "Arial Black", system-ui, sans-serif;
 	--body: "Figtree", system-ui, -apple-system, sans-serif;
 	--mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -27,13 +29,13 @@
 @media (prefers-color-scheme: dark) {
 	:root:not([data-theme="light"]) {
 		--bg: #10243E; --fg: #F4EEE2; --muted: #9DB0C6; --band: #1A3352; --control: #2A4666; --dot: #4C6685;
-		--arrow: #F1E9DA; --accent: #FF7E5F; --button: #FF7E5F; --on-button: #10243E; --heart: #FF6B4A; --gold: #FFC857; --hole: #060E1A;
+		--arrow: #F1E9DA; --accent: #FF7E5F; --button: #FF7E5F; --on-button: #10243E; --heart: #FF6B4A; --gold: #FFC857; --hole: #060E1A; --sand: #8A6D45; --high-water: #17405F;
 		color-scheme: dark;
 	}
 }
 :root[data-theme="dark"] {
 	--bg: #10243E; --fg: #F4EEE2; --muted: #9DB0C6; --band: #1A3352; --control: #2A4666; --dot: #4C6685;
-	--arrow: #F1E9DA; --accent: #FF7E5F; --button: #FF7E5F; --on-button: #10243E; --heart: #FF6B4A; --gold: #FFC857; --hole: #060E1A;
+	--arrow: #F1E9DA; --accent: #FF7E5F; --button: #FF7E5F; --on-button: #10243E; --heart: #FF6B4A; --gold: #FFC857; --hole: #060E1A; --sand: #8A6D45; --high-water: #17405F;
 	color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -71,6 +73,11 @@ a { color: inherit; }
 .hearts svg { width: 22px; height: 22px; fill: var(--heart); stroke: var(--heart); stroke-width: 2; transition: fill 0.2s; }
 .hearts svg.lost { fill: transparent; }
 #board { display: block; width: 100%; aspect-ratio: 1; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+#board { border-radius: 16px; }
+#board .water { fill: var(--high-water); opacity: 0; transition: opacity 0.6s; }
+#board.high .water { opacity: 1; }
+#board .sand { fill: var(--sand); transition: opacity 0.6s; }
+#board.high .sand { opacity: 0.2; }
 #board .dot { fill: var(--dot); }
 #board .piece { cursor: pointer; outline: none; }
 #board .target { fill: none; stroke: transparent; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; pointer-events: stroke; }
@@ -84,6 +91,13 @@ a { color: inherit; }
 #board .bumped .tip { fill: var(--heart); }
 #board .piece:focus-visible .target { stroke: var(--control); }
 #board.over .piece { pointer-events: none; cursor: default; }
+.tide { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.gauge { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+.pips { display: flex; gap: 5px; }
+.pips i { width: 9px; height: 9px; border-radius: 50%; background: var(--control); }
+.pips i.on { background: var(--accent); }
+#wait { min-height: 44px; padding-inline: 18px; border-radius: 22px; }
+#wait.urgent { background: var(--button); color: var(--on-button); }
 .status { min-height: 3.2em; font-weight: 500; }
 .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 button { font: 700 0.9375rem var(--body); min-height: 48px; border: 0; border-radius: 14px; background: var(--control); color: var(--fg); cursor: pointer; transition: transform 0.12s; }
@@ -92,6 +106,9 @@ button.primary { background: var(--button); color: var(--on-button); }
 :focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 
 section { padding-block: 56px; }
+.tides { display: grid; gap: 28px 32px; }
+.tides > div { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.tides svg { width: 100%; max-width: 260px; height: auto; border-radius: 14px; }
 .band { background: var(--band); }
 .intro { display: grid; gap: 10px; max-width: 40em; margin-bottom: 32px; }
 .key { display: grid; gap: 28px 32px; margin: 0; padding: 0; list-style: none; }
@@ -103,6 +120,7 @@ section { padding-block: 56px; }
 .privacy { max-width: 40em; display: grid; gap: 12px; }
 footer { padding-block: 24px 40px; }
 
+@media (min-width: 760px) { .tides { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 620px) { .key { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pair { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 980px) {
 	.hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; padding-block: 24px 72px; }
@@ -125,8 +143,8 @@ footer { padding-block: 24px 40px; }
 		<div class="lede">
 			<p class="label">Harbor logic puzzle</p>
 			<h1>Castoff</h1>
-			<p class="big">Every board starts as a tangle. Which line can leave first?</p>
-			<p>Try a board right here. The coral line is boxed in, so it can't go first.</p>
+			<p class="big">The puzzle where the water moves.</p>
+			<p>Every board starts as a tangle. Then the tide turns. Which line can leave first, and can it leave right now? Try this board and find out.</p>
 			<p class="soon"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M14 8L4 2L6 8L4 14Z"/></svg>Coming soon to the App Store</p>
 		</div>
 
@@ -136,7 +154,11 @@ footer { padding-block: 24px 40px; }
 				<div class="hearts" id="hearts" role="img" aria-label="3 of 3 hearts"></div>
 			</div>
 			<svg id="board" viewBox="-9 -9 78 78" role="group" aria-label="Playable puzzle board"></svg>
-			<p class="status" id="status" aria-live="polite">Tap an arrow with a clear run to open water. Hit another arrow and you lose a heart.</p>
+			<div class="tide">
+				<div class="gauge" id="gauge" role="img" aria-label="Low tide, turns in 3 arrows"><span id="tideName">Low tide</span><span class="pips" id="pips" aria-hidden="true"><i></i><i></i><i></i></span></div>
+				<button id="wait" type="button">Wait for the tide</button>
+			</div>
+			<p class="status" id="status" aria-live="polite">Tap an arrow with a clear run. Sand stops arrows at low tide, and the tide turns every 3 arrows.</p>
 			<div class="tools">
 				<button id="hint" type="button">Show a free arrow</button>
 				<button id="reset" type="button">Start over</button>
@@ -144,6 +166,32 @@ footer { padding-block: 24px 40px; }
 		</div>
 	</main>
 </div>
+
+<section>
+	<div class="wrap">
+		<div class="intro">
+			<h2>The tide changes the board</h2>
+			<p>Most puzzles ask what's free. Castoff also asks when. The same arrow can be stuck one moment and clear the next.</p>
+		</div>
+		<div class="tides">
+			<div>
+				<svg viewBox="0 0 130 70" aria-hidden="true"><rect width="130" height="70" fill="var(--band)"/><rect x="74" y="20" width="30" height="30" rx="7" fill="var(--sand)"/><path d="M14 35H52" stroke="var(--arrow)" stroke-width="5" stroke-linecap="round"/><path d="M68 35L50 25L55 35L50 45Z" fill="var(--arrow)"/></svg>
+				<h3>Low tide</h3>
+				<p>Sandbars rise out of the water and stop any arrow that reaches them. A bump costs a heart.</p>
+			</div>
+			<div>
+				<svg viewBox="0 0 130 70" aria-hidden="true"><rect width="130" height="70" fill="var(--high-water)"/><rect x="74" y="20" width="30" height="30" rx="7" fill="var(--sand)" opacity="0.2"/><path d="M14 35H100" stroke="var(--arrow)" stroke-width="5" stroke-linecap="round"/><path d="M118 35L100 25L105 35L100 45Z" fill="var(--arrow)"/></svg>
+				<h3>High tide</h3>
+				<p>The sand slips under the water and the way is open. The tide turns every time 3 arrows leave, so your order decides what opens next.</p>
+			</div>
+			<div>
+				<svg viewBox="0 0 130 70" aria-hidden="true"><rect width="130" height="70" fill="var(--band)"/><circle cx="45" cy="35" r="7" fill="var(--accent)"/><circle cx="65" cy="35" r="7" fill="var(--accent)"/><circle cx="85" cy="35" r="7" fill="none" stroke="var(--accent)" stroke-width="2"/></svg>
+				<h3>Wait, if you must</h3>
+				<p>Waiting turns the tide for the price of a flag, never a heart, so you can always finish. Find the right order and you never need to.</p>
+			</div>
+		</div>
+	</div>
+</section>
 
 <section class="band">
 	<div class="wrap">
@@ -223,6 +271,8 @@ footer { padding-block: 24px 40px; }
 
 <script>
 const SIZE = 7;
+const ARROWS_PER_TIDE = 3;
+const SANDBARS = [[0,6],[1,6]];
 const ARROWS = [
 	{ name: "coil", cells: [[3,3],[4,3],[4,4],[3,4],[2,4],[2,3],[2,2],[3,2],[4,2],[5,2]] },
 	{ name: "east", cells: [[6,0],[6,1],[6,2],[6,3]] },
@@ -245,11 +295,19 @@ const heartsBox = document.getElementById("hearts");
 const progress = document.getElementById("progress");
 const hintButton = document.getElementById("hint");
 const resetButton = document.getElementById("reset");
+const waitButton = document.getElementById("wait");
+const gauge = document.getElementById("gauge");
+const tideName = document.getElementById("tideName");
+const pips = document.getElementById("pips");
 const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const INTRO = statusLine.textContent;
 const HEADINGS = { "1,0": "right", "-1,0": "left", "0,1": "down", "0,-1": "up" };
 
-let pieces = [], hearts = 3, finished = false;
+let pieces = [], hearts = 3, finished = false, escapes = 0, waits = 0;
+
+function isHighTide() {
+	return (Math.floor(escapes / ARROWS_PER_TIDE) + waits) % 2 === 1;
+}
 
 function element(name, attributes, parent) {
 	const node = document.createElementNS(SVG, name);
@@ -319,6 +377,7 @@ function runBeforeObstacle(piece) {
 	for (const other of pieces) {
 		if (other !== piece && !other.gone) other.cells.forEach((c) => taken.add(c.join()));
 	}
+	if (!isHighTide()) SANDBARS.forEach((c) => taken.add(c.join()));
 	let steps = 0;
 	for (let x = hx + dx, y = hy + dy; x >= 0 && y >= 0 && x < SIZE && y < SIZE; x += dx, y += dy, steps++) {
 		if (taken.has(x + "," + y)) return steps;
@@ -348,6 +407,23 @@ function showProgress() {
 	progress.setAttribute("aria-valuenow", cleared);
 }
 
+function showTide() {
+	const high = isHighTide();
+	const progress = escapes % ARROWS_PER_TIDE;
+	board.classList.toggle("high", high);
+	tideName.textContent = high ? "High tide" : "Low tide";
+	[...pips.children].forEach((pip, index) => pip.classList.toggle("on", index < progress));
+	gauge.setAttribute("aria-label", `${high ? "High" : "Low"} tide, turns in ${ARROWS_PER_TIDE - progress} arrows`);
+	const stuck = !finished && pieces.some((p) => !p.gone) && !pieces.some((p) => !p.gone && runBeforeObstacle(p) === null);
+	waitButton.classList.toggle("urgent", stuck);
+	waitButton.disabled = finished;
+	if (stuck) statusLine.textContent = "Nothing can leave at this tide. Wait for it to turn.";
+}
+
+function flagsEarned() {
+	return Math.max(1, 3 - (3 - hearts) - waits);
+}
+
 function finish(message) {
 	finished = true;
 	board.classList.add("over");
@@ -369,19 +445,25 @@ function tapped(piece) {
 		piece.gone = true;
 		piece.group.removeAttribute("tabindex");
 		piece.group.style.pointerEvents = "none";
-		statusLine.textContent = INTRO;
+		escapes += 1;
+		statusLine.textContent = escapes % ARROWS_PER_TIDE === 0 ? (isHighTide() ? "High tide. The sand is under water." : "Low tide. The sand is back.") : INTRO;
 		showProgress();
 		const distance = piece.length + 110;
 		animate(0.55 + piece.length / 200, (t) => draw(piece, distance * t * t), () => piece.group.remove());
-		if (pieces.every((p) => p.gone)) finish("Clear waters! New pieces and daily charts are waiting in the game.");
+		if (pieces.every((p) => p.gone)) {
+			const flags = flagsEarned();
+			finish(`Clear waters! ${flags} ${flags === 1 ? "flag" : "flags"}. New pieces and daily charts are waiting in the game.`);
+		}
+		showTide();
 		return;
 	}
 	piece.bumping = true;
 	piece.group.classList.add("bumped");
 	hearts -= 1;
 	showHearts();
-	statusLine.textContent = "Something in the way? Move that arrow first.";
+	statusLine.textContent = "Something in the way? Move it first, or wait for the tide.";
 	if (hearts === 0) finish("Run aground. Every board has an order, so try this one again.");
+	showTide();
 	const reach = Math.max(1.6, run * CELL + 1.6);
 	animate(0.4, (t) => draw(piece, reach * (t < 0.5 ? t * 2 : 2 - t * 2)), () => {
 		draw(piece, 0);
@@ -395,10 +477,16 @@ function build() {
 	board.classList.remove("over");
 	finished = false;
 	hearts = 3;
+	escapes = 0;
+	waits = 0;
 	hintButton.disabled = false;
 	resetButton.textContent = "Start over";
 	resetButton.classList.remove("primary");
 	statusLine.textContent = INTRO;
+	element("rect", { class: "water", x: -9, y: -9, width: 78, height: 78 }, board);
+	for (const [x, y] of SANDBARS) {
+		element("rect", { class: "sand", x: x * CELL - 5, y: y * CELL - 5, width: CELL, height: CELL, rx: 2.2 }, board);
+	}
 	for (let y = 0; y < SIZE; y++) {
 		for (let x = 0; x < SIZE; x++) element("circle", { class: "dot", cx: x * CELL, cy: y * CELL, r: 0.7 }, board);
 	}
@@ -433,6 +521,7 @@ function build() {
 	});
 	showHearts();
 	showProgress();
+	showTide();
 }
 
 for (let i = 0; i < 3; i++) {
@@ -444,7 +533,16 @@ hintButton.addEventListener("click", () => {
 	if (free) {
 		free.group.classList.add("hinted");
 		statusLine.textContent = "This one has a clear run.";
+	} else {
+		statusLine.textContent = "Nothing can leave at this tide. Wait for it to turn.";
 	}
+});
+waitButton.addEventListener("click", () => {
+	if (finished) return;
+	clearHint();
+	waits += 1;
+	statusLine.textContent = `${isHighTide() ? "High" : "Low"} tide. Waiting costs a flag.`;
+	showTide();
 });
 resetButton.addEventListener("click", build);
 build();
