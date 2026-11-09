@@ -1,6 +1,7 @@
 <title>Castoff</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Castoff is the puzzle where the water moves. Sandbars open and close as the tide turns, on iPhone and iPad.">
+<meta name="description" content="Castoff is the puzzle where the water moves. Sandbars open and close as the tide turns. Free on the App Store for iPhone and iPad.">
+<meta name="apple-itunes-app" content="app-id=6829118725">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Figtree:wght@400;500;700&family=Unbounded:wght@600;800&display=swap">
@@ -62,8 +63,10 @@ a { color: inherit; }
 .hero h1 { font-size: clamp(2.6rem, 15vw, 5.4rem); font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: var(--accent); }
 .lede { display: grid; gap: 18px; align-content: center; }
 .lede .big { font-size: clamp(1.25rem, 3vw, 1.6rem); line-height: 1.35; font-weight: 500; max-width: 26em; text-wrap: balance; }
-.soon { display: inline-flex; align-items: center; gap: 10px; justify-self: start; padding: 11px 18px; border-radius: 14px; background: var(--control); font-weight: 700; }
-.soon svg { width: 16px; height: 16px; fill: var(--accent); flex: none; }
+.store { display: inline-flex; align-items: center; gap: 10px; justify-self: start; min-height: 48px; padding: 12px 20px; border-radius: 14px; background: var(--fg); color: var(--bg); font-weight: 700; text-decoration: none; transition: transform 0.15s; }
+.store:hover { transform: translateY(-1px); }
+.store:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.store svg { width: 16px; height: 16px; fill: var(--accent); flex: none; }
 
 .game { display: grid; gap: 12px; width: 100%; max-width: 520px; justify-self: center; }
 .bar { display: flex; align-items: center; gap: 12px; }
@@ -117,6 +120,7 @@ section { padding-block: 56px; }
 .pair { display: grid; gap: 40px; }
 .pair > div { display: grid; gap: 12px; align-content: start; min-width: 0; }
 .free { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 0; padding: 0; list-style: none; font: 600 clamp(1.05rem, 3vw, 1.4rem)/1.4 var(--display); }
+.free + .store { margin-top: 28px; }
 .privacy { max-width: 40em; display: grid; gap: 12px; }
 footer { padding-block: 24px 40px; }
 
@@ -136,7 +140,7 @@ footer { padding-block: 24px 40px; }
 			<svg viewBox="0 0 70 70" aria-hidden="true"><path d="M30 30H40V40H20V20H50V50H10V10H56" fill="none" stroke="var(--accent)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M68 10L53 2L56 10L53 18Z" fill="var(--accent)"/></svg>
 			Castoff
 		</a>
-		<span class="label">iPhone and iPad</span>
+		<a class="label" href="https://apps.apple.com/app/id6829118725">iPhone and iPad</a>
 	</header>
 
 	<main class="hero" id="play">
@@ -145,7 +149,7 @@ footer { padding-block: 24px 40px; }
 			<h1>Castoff</h1>
 			<p class="big">The puzzle where the water moves.</p>
 			<p>Every board starts as a tangle. Then the tide turns. Which line can leave first, and can it leave right now? Try this board and find out.</p>
-			<p class="soon"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M14 8L4 2L6 8L4 14Z"/></svg>Coming soon to the App Store</p>
+			<a class="store" href="https://apps.apple.com/app/id6829118725"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M14 8L4 2L6 8L4 14Z"/></svg>Download on the App Store</a>
 		</div>
 
 		<div class="game">
@@ -251,6 +255,7 @@ footer { padding-block: 24px 40px; }
 			<li>No account</li>
 			<li>Plays offline</li>
 		</ul>
+		<a class="store" href="https://apps.apple.com/app/id6829118725"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M14 8L4 2L6 8L4 14Z"/></svg>Get Castoff free</a>
 	</div>
 </section>
 
